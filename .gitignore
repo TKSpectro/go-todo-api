@@ -22,3 +22,5 @@ go.work
 
 # tmp folder which is used by air for on the fly building
 tmp/
+
+*.db
