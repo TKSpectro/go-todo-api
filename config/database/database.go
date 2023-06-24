@@ -5,7 +5,7 @@ import (
 	"time"
 	"tkspectro/vefeast/config"
 
-	"gorm.io/driver/sqlite"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -13,7 +13,9 @@ import (
 var DB *gorm.DB
 
 func Connect() {
-	db, err := gorm.Open(sqlite.Open(config.DB), &gorm.Config{
+	dsn := fmt.Sprintf("%v:%v@tcp(127.0.0.1:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", config.DB_USER, config.DB_ROOT_PASSWORD, config.DB_PORT, config.DB_NAME)
+
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		// Logger:  logger.Default.LogMode(logger.Info),
 		NowFunc: func() time.Time { return time.Now().Local() },
 	})
