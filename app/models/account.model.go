@@ -9,7 +9,7 @@ import (
 )
 
 type Account struct {
-	gorm.Model
+	BaseModel
 	Email       string `gorm:"uniqueIndex;not null" json:"email"`
 	Password    string `gorm:"not null" json:"password"`
 	Firstname   string `gorm:"" json:"firstname"`

@@ -63,6 +63,39 @@
                     }
                 }
             }
+        },
+        "/auth/register": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Register",
+                "parameters": [
+                    {
+                        "description": "Account",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.RegisterDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.AuthResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -124,6 +157,58 @@
                 },
                 "updatedAt": {
                     "type": "string"
+                }
+            }
+        },
+        "types.AuthResponse": {
+            "type": "object",
+            "properties": {
+                "auth": {
+                    "$ref": "#/definitions/types.AuthResponseBody"
+                }
+            }
+        },
+        "types.AuthResponseBody": {
+            "type": "object",
+            "properties": {
+                "refreshToken": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.RegisterDTO": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "$ref": "#/definitions/types.RegisterDTOBody"
+                }
+            }
+        },
+        "types.RegisterDTOBody": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstname": {
+                    "type": "string",
+                    "minLength": 2
+                },
+                "lastname": {
+                    "type": "string",
+                    "minLength": 2
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 6
                 }
             }
         }

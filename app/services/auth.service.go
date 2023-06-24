@@ -13,6 +13,14 @@ import (
 	"gorm.io/gorm"
 )
 
+// Register      godoc
+// @Summary      Register
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        account body types.RegisterDTO true "Account"
+// @Success      200 {object} types.AuthResponse
+// @Router       /auth/register [post]
 func Register(c *fiber.Ctx) error {
 	remote := new(types.RegisterDTO)
 
@@ -20,19 +28,19 @@ func Register(c *fiber.Ctx) error {
 		return err
 	}
 
-	err := models.FindAccountByEmail(&struct{ ID string }{}, remote.Email).Error
+	err := models.FindAccountByEmail(&struct{ ID string }{}, remote.Account.Email).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return &core.ACCOUNT_WITH_EMAIL_ALREADY_EXISTS
 	}
 
 	account := &models.Account{
-		Email:       remote.Email,
+		Email:       remote.Account.Email,
 		TokenSecret: models.GenerateSecretToken(),
-		Firstname:   remote.Firstname,
-		Lastname:    remote.Lastname,
+		Firstname:   remote.Account.Firstname,
+		Lastname:    remote.Account.Lastname,
 	}
 
-	hashedPassword, err := models.HashPassword(remote.Password)
+	hashedPassword, err := models.HashPassword(remote.Account.Password)
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -54,8 +62,10 @@ func Register(c *fiber.Ctx) error {
 	})
 
 	return c.JSON(&types.AuthResponse{
-		Token:        token,
-		RefreshToken: refreshToken,
+		Auth: types.AuthResponseBody{
+			Token:        token,
+			RefreshToken: refreshToken,
+		},
 	})
 }
 
@@ -67,14 +77,14 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	account := &models.Account{}
-	if err := models.FindAccountByEmail(account, remote.Email).Error; err != nil {
+	if err := models.FindAccountByEmail(account, remote.Account.Email).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &core.NOT_FOUND
 		}
 		return err
 	}
 
-	if !models.CheckPasswordHash(remote.Password, account.Password) {
+	if !models.CheckPasswordHash(remote.Account.Password, account.Password) {
 		return &core.AUTH_LOGIN_WRONG_PASSWORD
 	}
 
@@ -89,8 +99,10 @@ func Login(c *fiber.Ctx) error {
 	})
 
 	return c.JSON(&types.AuthResponse{
-		Token:        token,
-		RefreshToken: refreshToken,
+		Auth: types.AuthResponseBody{
+			Token:        token,
+			RefreshToken: refreshToken,
+		},
 	})
 }
 
@@ -107,7 +119,7 @@ func Refresh(c *fiber.Ctx) error {
 
 	account := &models.Account{}
 	if err := database.DB.Model(account).Take(account, &models.Account{
-		Model:       gorm.Model{ID: accountId},
+		BaseModel:   models.BaseModel{ID: accountId},
 		TokenSecret: tokenSecret,
 	}).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -127,7 +139,9 @@ func Refresh(c *fiber.Ctx) error {
 	})
 
 	return c.JSON(&types.AuthResponse{
-		Token:        token,
-		RefreshToken: refreshToken,
+		Auth: types.AuthResponseBody{
+			Token:        token,
+			RefreshToken: refreshToken,
+		},
 	})
 }

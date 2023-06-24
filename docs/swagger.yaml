@@ -40,6 +40,41 @@ definitions:
       updatedAt:
         type: string
     type: object
+  types.AuthResponse:
+    properties:
+      auth:
+        $ref: '#/definitions/types.AuthResponseBody'
+    type: object
+  types.AuthResponseBody:
+    properties:
+      refreshToken:
+        type: string
+      token:
+        type: string
+    type: object
+  types.RegisterDTO:
+    properties:
+      account:
+        $ref: '#/definitions/types.RegisterDTOBody'
+    type: object
+  types.RegisterDTOBody:
+    properties:
+      email:
+        type: string
+      firstname:
+        minLength: 2
+        type: string
+      lastname:
+        minLength: 2
+        type: string
+      password:
+        maxLength: 100
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
 info:
   contact: {}
   title: fiber-api
@@ -82,4 +117,25 @@ paths:
       summary: Get account
       tags:
       - accounts
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Account
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/types.RegisterDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.AuthResponse'
+      summary: Register
+      tags:
+      - auth
 swagger: "2.0"
