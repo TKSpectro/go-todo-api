@@ -2,14 +2,22 @@ package main
 
 import (
 	"errors"
+	"tkspectro/vefeast/config/database"
 	"tkspectro/vefeast/core"
+	_ "tkspectro/vefeast/docs"
 	"tkspectro/vefeast/router"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
+// @title           fiber-api
+// @version         1.0
+
+// @BasePath  /api
 func main() {
+	database.Setup()
+
 	app := fiber.New(fiber.Config{
 		ErrorHandler: ErrorHandler,
 	})
@@ -17,8 +25,6 @@ func main() {
 	app.Use(logger.New())
 
 	router.SetupRoutes(app)
-
-	core.SetupDatabase()
 
 	app.Listen(":3000")
 }

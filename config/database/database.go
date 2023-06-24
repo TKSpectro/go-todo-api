@@ -1,6 +1,7 @@
-package core
+package database
 
 import (
+	"fmt"
 	"tkspectro/vefeast/model"
 
 	"gorm.io/driver/sqlite"
@@ -10,13 +11,14 @@ import (
 // DB gorm connector
 var DB *gorm.DB
 
-func SetupDatabase() {
-	var err error
-
-	DB, err = gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+func Setup() {
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {
-		panic("DB RIP")
+		fmt.Println("[DATABASE]::CONNECTION_ERROR")
+		panic(err)
 	}
+
+	DB = db
 
 	Migrate(DB)
 }

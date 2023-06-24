@@ -1,6 +1,9 @@
 package router
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/swagger"
+)
 
 func SetupRoutes(app *fiber.App) {
 	app.Get("/", func(c *fiber.Ctx) error {
@@ -12,6 +15,8 @@ func SetupRoutes(app *fiber.App) {
 	api.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello from base api path")
 	})
+
+	api.Get("/docs/*", swagger.HandlerDefault)
 
 	RegisterRoutesAuth(api.Group("/auth"))
 

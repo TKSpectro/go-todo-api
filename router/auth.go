@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"errors"
 	"time"
+	"tkspectro/vefeast/config/database"
 	"tkspectro/vefeast/core"
 	"tkspectro/vefeast/model"
 
@@ -16,12 +17,13 @@ import (
 func RegisterRoutesAuth(router fiber.Router) {
 	// Authentication routes
 	router.Put("/login", func(c *fiber.Ctx) error {
+		db := database.DB
+
 		remote := new(model.Account)
 		if err := c.BodyParser(remote); err != nil {
 			return &core.BAD_REQUEST
 		}
 
-		db := core.DB
 		var account model.Account
 		if err := db.Where(&model.Account{Email: remote.Email}).Find(&account).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -54,7 +56,7 @@ func RegisterRoutesAuth(router fiber.Router) {
 	})
 
 	router.Post("/register", func(c *fiber.Ctx) error {
-		db := core.DB
+		db := database.DB
 
 		account := new(model.Account)
 		if err := c.BodyParser(account); err != nil {

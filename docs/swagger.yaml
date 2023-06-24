@@ -1,0 +1,85 @@
+basePath: /api
+definitions:
+  model.Account:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      firstname:
+        type: string
+      id:
+        type: integer
+      lastname:
+        type: string
+      password:
+        type: string
+      secretToken:
+        type: string
+      todos:
+        items:
+          $ref: '#/definitions/model.Todo'
+        type: array
+      updatedAt:
+        type: string
+    type: object
+  model.Todo:
+    properties:
+      account:
+        $ref: '#/definitions/model.Account'
+      accountID:
+        type: integer
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+info:
+  contact: {}
+  title: fiber-api
+  version: "1.0"
+paths:
+  /accounts:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Account'
+            type: array
+      summary: List accounts
+      tags:
+      - accounts
+  /accounts/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get string by ID
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Account'
+      summary: Get account
+      tags:
+      - accounts
+swagger: "2.0"
