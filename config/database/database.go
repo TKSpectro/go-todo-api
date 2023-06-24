@@ -2,7 +2,7 @@ package database
 
 import (
 	"fmt"
-	"tkspectro/vefeast/model"
+	"tkspectro/vefeast/app/models"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -24,6 +24,6 @@ func Setup() {
 }
 
 func Migrate(db *gorm.DB) {
-	db.AutoMigrate(&model.Account{})
-	db.AutoMigrate(&model.Todo{})
+	db.AutoMigrate(&models.Account{})
+	db.AutoMigrate(&models.Todo{})
 }

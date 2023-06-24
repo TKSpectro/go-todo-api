@@ -2,10 +2,10 @@ package main
 
 import (
 	"errors"
+	"tkspectro/vefeast/app/routes"
 	"tkspectro/vefeast/config/database"
 	"tkspectro/vefeast/core"
 	_ "tkspectro/vefeast/docs"
-	"tkspectro/vefeast/router"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -24,7 +24,7 @@ func main() {
 
 	app.Use(logger.New())
 
-	router.SetupRoutes(app)
+	routes.Setup(app)
 
 	app.Listen(":3000")
 }

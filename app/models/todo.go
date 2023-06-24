@@ -1,4 +1,4 @@
-package model
+package models
 
 type Todo struct {
 	BaseModel

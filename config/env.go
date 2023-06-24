@@ -7,6 +7,9 @@ import (
 
 var (
 	PORT = getEnv("PORT", "3000")
+
+	JWT_TOKEN_SECRET = getEnv("JWT_TOKEN_SECRET", "secret")
+	JWT_TOKEN_EXP    = getEnv("JWT_TOKEN_EXP", "10h")
 )
 
 func getEnv(name string, fallback string) string {

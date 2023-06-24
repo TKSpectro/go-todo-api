@@ -1,18 +1,35 @@
 package middleware
 
 import (
-	jwtware "github.com/gofiber/contrib/jwt"
+	"strings"
+	"tkspectro/vefeast/core"
+	"tkspectro/vefeast/utils/jwt"
+
 	"github.com/gofiber/fiber/v2"
 )
 
 // TODO: Switch to RS256 with signing files https://github.com/gofiber/contrib/tree/main/jwt#rs256-example
-func Protected() func(*fiber.Ctx) error {
-	return jwtware.New(jwtware.Config{
-		SigningKey: jwtware.SigningKey{
-			Key: []byte("secret"),
-		},
-		ErrorHandler: jwtError,
-	})
+func Protected(c *fiber.Ctx) error {
+	authHeader := c.Get("Authorization")
+
+	if authHeader == "" {
+		return &core.UNAUTHORIZED
+	}
+
+	chunks := strings.Split(authHeader, " ")
+
+	if len(chunks) < 2 {
+		return &core.UNAUTHORIZED
+	}
+
+	account, err := jwt.Verify(chunks[1])
+	if err != nil {
+		return &core.UNAUTHORIZED
+	}
+
+	c.Locals("AccountId", account.ID)
+
+	return c.Next()
 }
 
 func jwtError(c *fiber.Ctx, err error) error {

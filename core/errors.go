@@ -23,4 +23,7 @@ var (
 	FORBIDDEN             = RequestError{Code: 403, StatusCode: fiber.StatusForbidden, Message: "Forbidden."}
 	NOT_ACCEPTABLE        = RequestError{Code: 406, StatusCode: fiber.StatusNotAcceptable, Message: "Not acceptable."}
 	INTERNAL_SERVER_ERROR = RequestError{Code: 500, StatusCode: fiber.StatusInternalServerError, Message: "Internal Server error."}
+
+	// The validation error can be used but the message should be overwritten
+	VALIDATION_ERROR = RequestError{Code: 1000, StatusCode: fiber.StatusBadRequest, Message: "Validation error."}
 )
