@@ -8,6 +8,8 @@ import (
 var (
 	PORT = getEnv("PORT", "3000")
 
+	DB = getEnv("DB", "test.db")
+
 	JWT_TOKEN_SECRET = getEnv("JWT_TOKEN_SECRET", "secret")
 	JWT_TOKEN_EXP    = getEnv("JWT_TOKEN_EXP", "10h")
 )

@@ -2,7 +2,8 @@ package database
 
 import (
 	"fmt"
-	"tkspectro/vefeast/app/models"
+	"time"
+	"tkspectro/vefeast/config"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -11,19 +12,19 @@ import (
 // DB gorm connector
 var DB *gorm.DB
 
-func Setup() {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+func Connect() {
+	db, err := gorm.Open(sqlite.Open(config.DB), &gorm.Config{
+		// Logger:  logger.Default.LogMode(logger.Info),
+		NowFunc: func() time.Time { return time.Now().Local() },
+	})
 	if err != nil {
 		fmt.Println("[DATABASE]::CONNECTION_ERROR")
 		panic(err)
 	}
 
 	DB = db
-
-	Migrate(DB)
 }
 
-func Migrate(db *gorm.DB) {
-	db.AutoMigrate(&models.Account{})
-	db.AutoMigrate(&models.Todo{})
+func Migrate(tables ...interface{}) error {
+	return DB.AutoMigrate(tables...)
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"tkspectro/vefeast/app/models"
 	"tkspectro/vefeast/app/routes"
 	"tkspectro/vefeast/config/database"
 	"tkspectro/vefeast/core"
@@ -16,7 +17,8 @@ import (
 
 // @BasePath  /api
 func main() {
-	database.Setup()
+	database.Connect()
+	database.Migrate(&models.Account{}, &models.Todo{})
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: ErrorHandler,

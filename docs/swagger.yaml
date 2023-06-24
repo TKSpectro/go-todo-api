@@ -1,6 +1,6 @@
 basePath: /api
 definitions:
-  model.Account:
+  models.Account:
     properties:
       createdAt:
         type: string
@@ -18,15 +18,15 @@ definitions:
         type: string
       todos:
         items:
-          $ref: '#/definitions/model.Todo'
+          $ref: '#/definitions/models.Todo'
         type: array
       updatedAt:
         type: string
     type: object
-  model.Todo:
+  models.Todo:
     properties:
       account:
-        $ref: '#/definitions/model.Account'
+        $ref: '#/definitions/models.Account'
       accountID:
         type: integer
       createdAt:
@@ -56,7 +56,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.Account'
+              $ref: '#/definitions/models.Account'
             type: array
       summary: List accounts
       tags:
@@ -78,7 +78,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Account'
+            $ref: '#/definitions/models.Account'
       summary: Get account
       tags:
       - accounts

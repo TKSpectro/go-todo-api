@@ -34,7 +34,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Account"
+                                "$ref": "#/definitions/models.Account"
                             }
                         }
                     }
@@ -67,7 +67,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Account"
+                            "$ref": "#/definitions/models.Account"
                         }
                     }
                 }
@@ -75,7 +75,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "model.Account": {
+        "models.Account": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -102,7 +102,7 @@ const docTemplate = `{
                 "todos": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/model.Todo"
+                        "$ref": "#/definitions/models.Todo"
                     }
                 },
                 "updatedAt": {
@@ -110,11 +110,11 @@ const docTemplate = `{
                 }
             }
         },
-        "model.Todo": {
+        "models.Todo": {
             "type": "object",
             "properties": {
                 "account": {
-                    "$ref": "#/definitions/model.Account"
+                    "$ref": "#/definitions/models.Account"
                 },
                 "accountID": {
                     "type": "integer"

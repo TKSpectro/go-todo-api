@@ -25,7 +25,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Account"
+                                "$ref": "#/definitions/models.Account"
                             }
                         }
                     }
@@ -58,7 +58,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Account"
+                            "$ref": "#/definitions/models.Account"
                         }
                     }
                 }
@@ -66,7 +66,7 @@
         }
     },
     "definitions": {
-        "model.Account": {
+        "models.Account": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -93,7 +93,7 @@
                 "todos": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/model.Todo"
+                        "$ref": "#/definitions/models.Todo"
                     }
                 },
                 "updatedAt": {
@@ -101,11 +101,11 @@
                 }
             }
         },
-        "model.Todo": {
+        "models.Todo": {
             "type": "object",
             "properties": {
                 "account": {
-                    "$ref": "#/definitions/model.Account"
+                    "$ref": "#/definitions/models.Account"
                 },
                 "accountID": {
                     "type": "integer"
