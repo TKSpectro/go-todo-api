@@ -2,8 +2,10 @@ package models
 
 import (
 	"crypto/rand"
+	"tkspectro/vefeast/config/database"
 
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type Account struct {
@@ -17,8 +19,20 @@ type Account struct {
 	Todos []Todo
 }
 
+func FindAccount(dest interface{}, conditions ...interface{}) *gorm.DB {
+	return database.DB.Model(&Account{}).Take(dest, conditions...)
+}
+
+func FindAccountByEmail(dest interface{}, email string) *gorm.DB {
+	return FindAccount(dest, "email = ?", email)
+}
+
+func CreateAccount(account *Account) *gorm.DB {
+	return database.DB.Create(account)
+}
+
 func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	return string(bytes), err
 }
 
