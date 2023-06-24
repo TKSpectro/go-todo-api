@@ -1,4 +1,4 @@
-module tkspectro/vefeast
+module github.com/TKSpectro/go-todo-api
 
 go 1.20
 

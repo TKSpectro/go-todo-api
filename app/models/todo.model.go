@@ -1,9 +1,9 @@
 package models
 
 import (
-	"tkspectro/vefeast/app/types/pagination"
-	"tkspectro/vefeast/config/database"
-	"tkspectro/vefeast/utils"
+	"github.com/TKSpectro/go-todo-api/app/types/pagination"
+	"github.com/TKSpectro/go-todo-api/config/database"
+	"github.com/TKSpectro/go-todo-api/utils"
 
 	"gorm.io/gorm"
 )

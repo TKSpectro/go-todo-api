@@ -4,7 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"time"
-	"tkspectro/vefeast/config"
+
+	"github.com/TKSpectro/go-todo-api/config"
 
 	"github.com/golang-jwt/jwt/v5"
 )

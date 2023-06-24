@@ -1,8 +1,8 @@
 package types
 
 import (
-	"tkspectro/vefeast/app/models"
-	"tkspectro/vefeast/app/types/pagination"
+	"github.com/TKSpectro/go-todo-api/app/models"
+	"github.com/TKSpectro/go-todo-api/app/types/pagination"
 )
 
 type GetTodosResponse struct {

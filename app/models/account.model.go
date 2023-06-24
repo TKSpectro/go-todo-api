@@ -2,7 +2,8 @@ package models
 
 import (
 	"crypto/rand"
-	"tkspectro/vefeast/config/database"
+
+	"github.com/TKSpectro/go-todo-api/config/database"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"

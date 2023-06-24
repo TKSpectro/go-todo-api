@@ -3,7 +3,8 @@ package database
 import (
 	"fmt"
 	"time"
-	"tkspectro/vefeast/config"
+
+	"github.com/TKSpectro/go-todo-api/config"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

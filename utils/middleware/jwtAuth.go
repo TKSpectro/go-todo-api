@@ -2,8 +2,9 @@ package middleware
 
 import (
 	"strings"
-	"tkspectro/vefeast/core"
-	"tkspectro/vefeast/utils/jwt"
+
+	"github.com/TKSpectro/go-todo-api/core"
+	"github.com/TKSpectro/go-todo-api/utils/jwt"
 
 	"github.com/gofiber/fiber/v2"
 )

@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"tkspectro/vefeast/core"
+	"github.com/TKSpectro/go-todo-api/core"
 
 	"github.com/gofiber/fiber/v2"
 )

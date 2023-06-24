@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"tkspectro/vefeast/app/types/pagination"
+	"github.com/TKSpectro/go-todo-api/app/types/pagination"
 
 	"gorm.io/gorm"
 )

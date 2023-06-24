@@ -2,12 +2,13 @@ package services
 
 import (
 	"errors"
-	"tkspectro/vefeast/app/models"
-	"tkspectro/vefeast/app/types"
-	"tkspectro/vefeast/config/database"
-	"tkspectro/vefeast/core"
-	"tkspectro/vefeast/utils"
-	"tkspectro/vefeast/utils/jwt"
+
+	"github.com/TKSpectro/go-todo-api/app/models"
+	"github.com/TKSpectro/go-todo-api/app/types"
+	"github.com/TKSpectro/go-todo-api/config/database"
+	"github.com/TKSpectro/go-todo-api/core"
+	"github.com/TKSpectro/go-todo-api/utils"
+	"github.com/TKSpectro/go-todo-api/utils/jwt"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"

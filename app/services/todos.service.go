@@ -2,10 +2,11 @@ package services
 
 import (
 	"errors"
-	"tkspectro/vefeast/app/models"
-	"tkspectro/vefeast/app/types"
-	"tkspectro/vefeast/app/types/pagination"
-	"tkspectro/vefeast/core"
+
+	"github.com/TKSpectro/go-todo-api/app/models"
+	"github.com/TKSpectro/go-todo-api/app/types"
+	"github.com/TKSpectro/go-todo-api/app/types/pagination"
+	"github.com/TKSpectro/go-todo-api/core"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"

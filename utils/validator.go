@@ -3,7 +3,8 @@ package utils
 import (
 	"fmt"
 	"strings"
-	"tkspectro/vefeast/core"
+
+	"github.com/TKSpectro/go-todo-api/core"
 
 	"github.com/go-playground/validator/v10"
 )

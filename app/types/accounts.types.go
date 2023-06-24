@@ -1,6 +1,6 @@
 package types
 
-import "tkspectro/vefeast/app/models"
+import "github.com/TKSpectro/go-todo-api/app/models"
 
 type GetAccountsResponse struct {
 	Accounts []models.Account `json:"accounts"`

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"tkspectro/vefeast/app/types/pagination"
+	"github.com/TKSpectro/go-todo-api/app/types/pagination"
 
 	"github.com/gofiber/fiber/v2"
 )

@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"tkspectro/vefeast/app/services"
-	"tkspectro/vefeast/utils/middleware"
+	"github.com/TKSpectro/go-todo-api/app/services"
+	"github.com/TKSpectro/go-todo-api/utils/middleware"
 
 	"github.com/gofiber/fiber/v2"
 )
