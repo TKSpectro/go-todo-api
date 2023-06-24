@@ -14,12 +14,12 @@ definitions:
         type: string
       password:
         type: string
-      secretToken:
-        type: string
       todos:
         items:
           $ref: '#/definitions/models.Todo'
         type: array
+      tokenSecret:
+        type: string
       updatedAt:
         type: string
     type: object

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"tkspectro/vefeast/app/models"
 	"tkspectro/vefeast/app/types"
+	"tkspectro/vefeast/config/database"
 	"tkspectro/vefeast/core"
 	"tkspectro/vefeast/utils"
 	"tkspectro/vefeast/utils/jwt"
@@ -26,7 +27,7 @@ func Register(c *fiber.Ctx) error {
 
 	account := &models.Account{
 		Email:       remote.Email,
-		SecretToken: models.GenerateSecretToken(),
+		TokenSecret: models.GenerateSecretToken(),
 		Firstname:   remote.Firstname,
 		Lastname:    remote.Lastname,
 	}
@@ -42,12 +43,16 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	token := jwt.Generate(&jwt.TokenPayload{
-		ID: account.ID,
+		ID:   account.ID,
+		Type: "auth",
 	})
 
-	refreshToken := "TODO"
+	refreshToken := jwt.Generate(&jwt.TokenPayload{
+		ID:     account.ID,
+		Type:   "refresh",
+		Secret: account.TokenSecret,
+	})
 
-	// TODO: Implement refresh token
 	return c.JSON(&types.AuthResponse{
 		Token:        token,
 		RefreshToken: refreshToken,
@@ -77,9 +82,50 @@ func Login(c *fiber.Ctx) error {
 		ID: account.ID,
 	})
 
-	refreshToken := "TODO"
+	refreshToken := jwt.Generate(&jwt.TokenPayload{
+		ID:     account.ID,
+		Type:   "refresh",
+		Secret: account.TokenSecret,
+	})
 
-	// TODO: Implement refresh token
+	return c.JSON(&types.AuthResponse{
+		Token:        token,
+		RefreshToken: refreshToken,
+	})
+}
+
+func Refresh(c *fiber.Ctx) error {
+	var accountId = c.Locals("AccountId").(uint)
+	var tokenType = c.Locals("TokenType").(string)
+	var tokenSecret = c.Locals("TokenSecret").(string)
+
+	if tokenType != "refresh" {
+		return &core.WRONG_REFRESH_TOKEN
+	}
+
+	// TODO: Find account by id and tokenSecret
+
+	account := &models.Account{}
+	if err := database.DB.Model(account).Take(account, &models.Account{
+		Model:       gorm.Model{ID: accountId},
+		TokenSecret: tokenSecret,
+	}).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return &core.UNAUTHORIZED
+		}
+		return err
+	}
+
+	token := jwt.Generate(&jwt.TokenPayload{
+		ID: account.ID,
+	})
+
+	refreshToken := jwt.Generate(&jwt.TokenPayload{
+		ID:     account.ID,
+		Type:   "refresh",
+		Secret: account.TokenSecret,
+	})
+
 	return c.JSON(&types.AuthResponse{
 		Token:        token,
 		RefreshToken: refreshToken,

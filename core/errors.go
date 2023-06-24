@@ -28,6 +28,7 @@ var (
 	VALIDATION_ERROR = RequestError{Code: 1000, StatusCode: fiber.StatusBadRequest, Message: "Validation error."}
 
 	AUTH_LOGIN_WRONG_PASSWORD = RequestError{Code: 1050, StatusCode: fiber.StatusUnauthorized, Message: "Wrong password."}
+	WRONG_REFRESH_TOKEN       = RequestError{Code: 1051, StatusCode: fiber.StatusUnauthorized, Message: "Wrong refresh token."}
 
 	ACCOUNT_WITH_EMAIL_ALREADY_EXISTS = RequestError{Code: 1100, StatusCode: fiber.StatusBadRequest, Message: "An account with this email already exists."}
 )

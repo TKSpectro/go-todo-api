@@ -22,12 +22,14 @@ func Protected(c *fiber.Ctx) error {
 		return &core.UNAUTHORIZED
 	}
 
-	account, err := jwt.Verify(chunks[1])
+	payload, err := jwt.Verify(chunks[1])
 	if err != nil {
 		return &core.UNAUTHORIZED
 	}
 
-	c.Locals("AccountId", account.ID)
+	c.Locals("AccountId", payload.ID)
+	c.Locals("TokenSecret", payload.Secret)
+	c.Locals("TokenType", payload.Type)
 
 	return c.Next()
 }

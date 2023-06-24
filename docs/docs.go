@@ -96,14 +96,14 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
-                "secretToken": {
-                    "type": "string"
-                },
                 "todos": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.Todo"
                     }
+                },
+                "tokenSecret": {
+                    "type": "string"
                 },
                 "updatedAt": {
                     "type": "string"
