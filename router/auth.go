@@ -2,6 +2,7 @@ package router
 
 import (
 	"crypto/rand"
+	"errors"
 	"time"
 	"tkspectro/vefeast/core"
 	"tkspectro/vefeast/model"
@@ -9,26 +10,34 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 func RegisterRoutesAuth(router fiber.Router) {
 	// Authentication routes
 	router.Put("/login", func(c *fiber.Ctx) error {
-		remote := new(LoginBody)
-
+		remote := new(model.Account)
 		if err := c.BodyParser(remote); err != nil {
+			return &core.BAD_REQUEST
+		}
+
+		db := core.DB
+		var account model.Account
+		if err := db.Where(&model.Account{Email: remote.Email}).Find(&account).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return &core.NOT_FOUND
+			}
 			return err
 		}
 
-		// TODO: Get user from db
-		if false {
-			return c.SendStatus(fiber.StatusUnauthorized)
+		if !CheckPasswordHash(remote.Password, account.Password) {
+			return &core.UNAUTHORIZED
 		}
 
 		// Map out all the claims to write to the payload
 		claims := jwt.MapClaims{
-			"id":  "TODO",
-			"exp": time.Now().Add(time.Hour * 72).Unix(),
+			"accountId": account.ID,
+			"exp":       time.Now().Add(time.Hour * 72).Unix(),
 		}
 
 		// Generate token
@@ -37,7 +46,7 @@ func RegisterRoutesAuth(router fiber.Router) {
 		// TODO: Switch to RS256 with signing files https://github.com/gofiber/contrib/tree/main/jwt#rs256-example
 		t, err := token.SignedString([]byte("secret"))
 		if err != nil {
-			return c.SendStatus(fiber.StatusInternalServerError)
+			return &core.INTERNAL_SERVER_ERROR
 		}
 
 		// TODO: Implement refresh token
@@ -72,11 +81,11 @@ func RegisterRoutesAuth(router fiber.Router) {
 		// TODO: Switch to RS256 with signing files https://github.com/gofiber/contrib/tree/main/jwt#rs256-example
 		t, err := token.SignedString([]byte("secret"))
 		if err != nil {
-			return c.SendStatus(fiber.StatusInternalServerError)
+			return &core.INTERNAL_SERVER_ERROR
 		}
 
 		if err := db.Create(&account).Error; err != nil {
-			return c.SendStatus(fiber.StatusInternalServerError)
+			return &core.INTERNAL_SERVER_ERROR
 		}
 
 		// TODO: Implement refresh token
@@ -87,6 +96,12 @@ func RegisterRoutesAuth(router fiber.Router) {
 func hashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err
+}
+
+// CheckPasswordHash compare password with hash
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
 
 const ALLOWED_SECRET_TOKEN_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
@@ -103,9 +118,4 @@ func generateSecretToken() string {
 	}
 
 	return string(result)
-}
-
-type LoginBody struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
 }
