@@ -52,6 +52,23 @@ definitions:
       token:
         type: string
     type: object
+  types.LoginDTO:
+    properties:
+      account:
+        $ref: '#/definitions/types.LoginDTOBody'
+    type: object
+  types.LoginDTOBody:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 100
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
   types.RegisterDTO:
     properties:
       account:
@@ -117,6 +134,41 @@ paths:
       summary: Get account
       tags:
       - accounts
+  /auth/login:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Account
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/types.LoginDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.AuthResponse'
+      summary: Login
+      tags:
+      - auth
+  /auth/refresh:
+    put:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.AuthResponse'
+      summary: Refresh
+      tags:
+      - auth
   /auth/register:
     post:
       consumes:

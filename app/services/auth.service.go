@@ -69,6 +69,14 @@ func Register(c *fiber.Ctx) error {
 	})
 }
 
+// Login      godoc
+// @Summary      Login
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        account body types.LoginDTO true "Account"
+// @Success      200 {object} types.AuthResponse
+// @Router       /auth/login [put]
 func Login(c *fiber.Ctx) error {
 	remote := new(types.LoginDTO)
 
@@ -106,6 +114,13 @@ func Login(c *fiber.Ctx) error {
 	})
 }
 
+// Refresh      godoc
+// @Summary      Refresh
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} types.AuthResponse
+// @Router       /auth/refresh [put]
 func Refresh(c *fiber.Ctx) error {
 	var accountId = c.Locals("AccountId").(uint)
 	var tokenType = c.Locals("TokenType").(string)
@@ -114,8 +129,6 @@ func Refresh(c *fiber.Ctx) error {
 	if tokenType != "refresh" {
 		return &core.WRONG_REFRESH_TOKEN
 	}
-
-	// TODO: Find account by id and tokenSecret
 
 	account := &models.Account{}
 	if err := database.DB.Model(account).Take(account, &models.Account{

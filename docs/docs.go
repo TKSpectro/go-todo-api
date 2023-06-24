@@ -73,6 +73,61 @@ const docTemplate = `{
                 }
             }
         },
+        "/auth/login": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login",
+                "parameters": [
+                    {
+                        "description": "Account",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.LoginDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.AuthResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/refresh": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Refresh",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.AuthResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/register": {
             "post": {
                 "consumes": [
@@ -185,6 +240,31 @@ const docTemplate = `{
                 },
                 "token": {
                     "type": "string"
+                }
+            }
+        },
+        "types.LoginDTO": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "$ref": "#/definitions/types.LoginDTOBody"
+                }
+            }
+        },
+        "types.LoginDTOBody": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 6
                 }
             }
         },
