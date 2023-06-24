@@ -1,6 +1,14 @@
 package services
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"errors"
+	"tkspectro/vefeast/app/models"
+	"tkspectro/vefeast/app/types"
+	"tkspectro/vefeast/core"
+
+	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
+)
 
 // GetAccounts   godoc
 // @Summary      List accounts
@@ -10,7 +18,15 @@ import "github.com/gofiber/fiber/v2"
 // @Success      200  {array}  models.Account
 // @Router       /accounts [get]
 func GetAccounts(c *fiber.Ctx) error {
-	return c.SendString("/accounts")
+	var accounts = &[]models.Account{}
+	err := models.FindAccounts(accounts).Error
+	if err != nil {
+		return &core.INTERNAL_SERVER_ERROR
+	}
+
+	return c.JSON(&types.GetAccountsResponse{
+		Accounts: *accounts,
+	})
 }
 
 // GetAccount    godoc
@@ -23,5 +39,22 @@ func GetAccounts(c *fiber.Ctx) error {
 // @Success      200  {object}  models.Account
 // @Router       /accounts/{id} [get]
 func GetAccount(c *fiber.Ctx) error {
-	return c.SendString("/accounts/:id")
+	var account = &models.Account{}
+
+	remoteId := c.Params("id")
+	if remoteId == "" {
+		return &core.BAD_REQUEST
+	}
+
+	err := models.FindAccountByID(account, remoteId).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return &core.NOT_FOUND
+		}
+		return &core.INTERNAL_SERVER_ERROR
+	}
+
+	return c.JSON(&types.GetAccountResponse{
+		Account: *account,
+	})
 }

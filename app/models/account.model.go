@@ -11,16 +11,28 @@ import (
 type Account struct {
 	BaseModel
 	Email       string `gorm:"uniqueIndex;not null" json:"email"`
-	Password    string `gorm:"not null" json:"password"`
+	Password    string `gorm:"not null" json:"-"` // json:"-" means that this field will not be serialized
 	Firstname   string `gorm:"" json:"firstname"`
 	Lastname    string `gorm:"" json:"lastname"`
-	TokenSecret string `gorm:"type:varchar(8)" json:"tokenSecret"`
+	TokenSecret string `gorm:"type:varchar(8)" json:"-"` // json:"-" means that this field will not be serialized
 
-	Todos []Todo
+	Todos []Todo `gorm:"foreignKey:AccountID" json:"todos"`
+}
+
+func FindAccounts(dest interface{}, conditions ...interface{}) *gorm.DB {
+	return database.DB.Model(&Account{}).Find(dest, conditions...)
+}
+
+func FindAccountsWithTodos(dest interface{}, conditions ...interface{}) *gorm.DB {
+	return database.DB.Model(&Account{}).Preload("Todos").Find(dest, conditions...)
 }
 
 func FindAccount(dest interface{}, conditions ...interface{}) *gorm.DB {
 	return database.DB.Model(&Account{}).Take(dest, conditions...)
+}
+
+func FindAccountByID(dest interface{}, id string) *gorm.DB {
+	return FindAccount(dest, "id = ?", id)
 }
 
 func FindAccountByEmail(dest interface{}, email string) *gorm.DB {

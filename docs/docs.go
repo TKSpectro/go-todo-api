@@ -160,6 +160,60 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/todos": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "todos"
+                ],
+                "summary": "List todos",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.GetTodosResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/todos/{id}": {
+            "get": {
+                "description": "get string by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "todos"
+                ],
+                "summary": "Get todo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Todo ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.GetTodoResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -181,17 +235,11 @@ const docTemplate = `{
                 "lastname": {
                     "type": "string"
                 },
-                "password": {
-                    "type": "string"
-                },
                 "todos": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.Todo"
                     }
-                },
-                "tokenSecret": {
-                    "type": "string"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -201,17 +249,14 @@ const docTemplate = `{
         "models.Todo": {
             "type": "object",
             "properties": {
-                "account": {
-                    "$ref": "#/definitions/models.Account"
-                },
-                "accountID": {
-                    "type": "integer"
-                },
                 "createdAt": {
                     "type": "string"
                 },
                 "description": {
                     "type": "string"
+                },
+                "fkAccountId": {
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -221,6 +266,41 @@ const docTemplate = `{
                 },
                 "updatedAt": {
                     "type": "string"
+                }
+            }
+        },
+        "pagination.Meta": {
+            "type": "object",
+            "properties": {
+                "hasNextPage": {
+                    "type": "boolean"
+                },
+                "hasPrevPage": {
+                    "type": "boolean"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "nextPage": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "prevPage": {
+                    "type": "integer"
+                },
+                "skip": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "totalPages": {
+                    "type": "integer"
                 }
             }
         },
@@ -240,6 +320,28 @@ const docTemplate = `{
                 },
                 "token": {
                     "type": "string"
+                }
+            }
+        },
+        "types.GetTodoResponse": {
+            "type": "object",
+            "properties": {
+                "todo": {
+                    "$ref": "#/definitions/models.Todo"
+                }
+            }
+        },
+        "types.GetTodosResponse": {
+            "type": "object",
+            "properties": {
+                "_meta": {
+                    "$ref": "#/definitions/pagination.Meta"
+                },
+                "todos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Todo"
+                    }
                 }
             }
         },

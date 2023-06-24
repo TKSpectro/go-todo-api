@@ -12,33 +12,50 @@ definitions:
         type: integer
       lastname:
         type: string
-      password:
-        type: string
       todos:
         items:
           $ref: '#/definitions/models.Todo'
         type: array
-      tokenSecret:
-        type: string
       updatedAt:
         type: string
     type: object
   models.Todo:
     properties:
-      account:
-        $ref: '#/definitions/models.Account'
-      accountID:
-        type: integer
       createdAt:
         type: string
       description:
         type: string
+      fkAccountId:
+        type: integer
       id:
         type: integer
       title:
         type: string
       updatedAt:
         type: string
+    type: object
+  pagination.Meta:
+    properties:
+      hasNextPage:
+        type: boolean
+      hasPrevPage:
+        type: boolean
+      limit:
+        type: integer
+      nextPage:
+        type: integer
+      offset:
+        type: integer
+      page:
+        type: integer
+      prevPage:
+        type: integer
+      skip:
+        type: integer
+      total:
+        type: integer
+      totalPages:
+        type: integer
     type: object
   types.AuthResponse:
     properties:
@@ -51,6 +68,20 @@ definitions:
         type: string
       token:
         type: string
+    type: object
+  types.GetTodoResponse:
+    properties:
+      todo:
+        $ref: '#/definitions/models.Todo'
+    type: object
+  types.GetTodosResponse:
+    properties:
+      _meta:
+        $ref: '#/definitions/pagination.Meta'
+      todos:
+        items:
+          $ref: '#/definitions/models.Todo'
+        type: array
     type: object
   types.LoginDTO:
     properties:
@@ -190,4 +221,39 @@ paths:
       summary: Register
       tags:
       - auth
+  /todos:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.GetTodosResponse'
+      summary: List todos
+      tags:
+      - todos
+  /todos/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get string by ID
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.GetTodoResponse'
+      summary: Get todo
+      tags:
+      - todos
 swagger: "2.0"
