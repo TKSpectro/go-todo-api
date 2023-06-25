@@ -1,16 +1,18 @@
 package pagination
 
 type Meta struct {
-	Search      string `json:"-"`
-	Order       string `json:"-"`
-	Limit       int    `json:"limit"`
-	Offset      int    `json:"offset"`
-	Skip        int    `json:"skip"`
-	Page        int    `json:"page"`
-	NextPage    int    `json:"nextPage"`
-	PrevPage    int    `json:"prevPage"`
-	Total       int    `json:"total"`
-	TotalPages  int    `json:"totalPages"`
-	HasNextPage bool   `json:"hasNextPage"`
-	HasPrevPage bool   `json:"hasPrevPage"`
+	Limit       int  `json:"limit"`
+	Offset      int  `json:"offset"`
+	Skip        int  `json:"skip"`
+	Page        int  `json:"page"`
+	NextPage    int  `json:"nextPage"`
+	PrevPage    int  `json:"prevPage"`
+	Total       int  `json:"total"`
+	TotalPages  int  `json:"totalPages"`
+	HasNextPage bool `json:"hasNextPage"`
+	HasPrevPage bool `json:"hasPrevPage"`
+
+	Filters map[string]string `json:"-"`
+	Search  string            `json:"-"`
+	Order   string            `json:"-"`
 }

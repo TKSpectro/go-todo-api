@@ -1,8 +1,9 @@
 package middleware
 
 import (
+	"strings"
+
 	"github.com/TKSpectro/go-todo-api/app/types/pagination"
-	"github.com/TKSpectro/go-todo-api/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -30,9 +31,36 @@ func Pagination(c *fiber.Ctx) error {
 		Limit:  limit,
 		Skip:   (page - 1) * limit,
 		Offset: (page - 1) * limit,
-		Order:  order,
-		Search: utils.ParseSearch(c.Query("search")),
+
+		Order:   order,
+		Search:  parseSearch(c.Query("search")),
+		Filters: parseFilters(c),
 	})
 
 	return c.Next()
+}
+
+func parseFilters(c *fiber.Ctx) map[string]string {
+	queryArgs := c.Context().QueryArgs()
+
+	filters := make(map[string]string)
+	// for queryArgs.Len
+	queryArgs.VisitAll(func(key, value []byte) {
+		// if key starts with filter
+		if strings.HasPrefix(string(key[:6]), "filter") {
+			modelKey := strings.Split(string(key[7:]), "]")[0]
+			filters[modelKey] = string(value)
+		}
+	})
+
+	return filters
+}
+
+// ParseSearch parses the search string and returns a string that can be used in a gorm query
+func parseSearch(search string) string {
+	if search == "" {
+		return "%"
+	}
+
+	return "%" + search + "%"
 }
