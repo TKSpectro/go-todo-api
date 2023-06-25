@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/TKSpectro/go-todo-api/app/types/pagination"
 	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/utils"
 
@@ -12,15 +13,15 @@ type Account struct {
 	BaseModel
 	Email       string `gorm:"uniqueIndex;not null" json:"email" x-search:"true"`
 	Password    string `gorm:"not null" json:"-"` // json:"-" means that this field will not be serialized
-	Firstname   string `gorm:"" json:"firstname"`
-	Lastname    string `gorm:"" json:"lastname"`
+	Firstname   string `gorm:"" json:"firstname" x-search:"true"`
+	Lastname    string `gorm:"" json:"lastname" x-search:"true"`
 	TokenSecret string `gorm:"type:varchar(8)" json:"-"` // json:"-" means that this field will not be serialized
 
 	Todos []Todo `gorm:"foreignKey:AccountID" json:"todos"`
 }
 
-func FindAccounts(dest interface{}, conditions ...interface{}) *gorm.DB {
-	return database.DB.Model(&Account{}).Find(dest, conditions...)
+func FindAccounts(dest interface{}, meta *pagination.Meta) *gorm.DB {
+	return FindWithMeta(dest, &Account{}, meta, nil)
 }
 
 func FindAccountsWithTodos(dest interface{}, conditions ...interface{}) *gorm.DB {

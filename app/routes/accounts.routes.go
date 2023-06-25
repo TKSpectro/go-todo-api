@@ -8,6 +8,6 @@ import (
 )
 
 func RegisterRoutesAccounts(router fiber.Router) {
-	router.Get("/", middleware.Protected, services.GetAccounts)
+	router.Get("/", middleware.Protected, middleware.Pagination, services.GetAccounts)
 	router.Get("/:id", middleware.Protected, services.GetAccount)
 }

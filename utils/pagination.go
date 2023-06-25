@@ -39,20 +39,20 @@ func SearchWhere(search string, model interface{}) (string, []interface{}) {
 
 	t := pointerType(reflect.TypeOf(model))
 
-	for i, fieldName := range []string{"Title", "Description"} {
-		field, found := t.FieldByName(fieldName)
-		if !found {
-			continue
-		}
+	firstSearchableField := true
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
 
 		xSearchTag := field.Tag.Get("x-search")
 		if xSearchTag == "true" {
 			amountSearchableFields++
 
-			if i == 0 {
-				searchString += fieldName + " LIKE ?"
+			if firstSearchableField {
+				searchString += field.Name + " LIKE ?"
+
+				firstSearchableField = false
 			} else {
-				searchString += " OR " + fieldName + " LIKE ?"
+				searchString += " OR " + field.Name + " LIKE ?"
 			}
 		}
 	}
@@ -63,16 +63,4 @@ func SearchWhere(search string, model interface{}) (string, []interface{}) {
 	}
 
 	return searchString, searchArray
-}
-
-// Some blessed person had this banger ready https://github.com/sas1024/gorm-loggable/issues/18#issuecomment-535024656
-// pointerType is made to chase for value through all the way following,
-// leading pointers until reach the deep final value which is not a pointer
-func pointerType(t reflect.Type) reflect.Type {
-	for {
-		if t.Kind() != reflect.Ptr {
-			return t
-		}
-		t = t.Elem()
-	}
 }
