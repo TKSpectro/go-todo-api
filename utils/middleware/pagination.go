@@ -40,16 +40,30 @@ func Pagination(c *fiber.Ctx) error {
 	return c.Next()
 }
 
-func parseFilters(c *fiber.Ctx) map[string]string {
+func parseFilters(c *fiber.Ctx) []pagination.FilterEntry {
 	queryArgs := c.Context().QueryArgs()
+	filters := make([]pagination.FilterEntry, 0)
 
-	filters := make(map[string]string)
-	// for queryArgs.Len
 	queryArgs.VisitAll(func(key, value []byte) {
-		// if key starts with filter
 		if strings.HasPrefix(string(key[:6]), "filter") {
-			modelKey := strings.Split(string(key[7:]), "]")[0]
-			filters[modelKey] = string(value)
+			// Split up the filter string by ] and already skip the first "["
+			entries := strings.Split(string(key[7:]), "]")
+
+			// Default
+			operator := "eq"
+
+			// If there are more than 2 entries, the operator is specified in the filter
+			if len(entries) > 2 {
+				// Split up the filter string by "[" so we can get the actual operator
+				// The last "]" was already removed in the previous split
+				operator = strings.Split(entries[1], "[")[1]
+			}
+
+			filters = append(filters, pagination.FilterEntry{
+				Key:      entries[0],
+				Operator: operator,
+				Value:    string(value),
+			})
 		}
 	})
 

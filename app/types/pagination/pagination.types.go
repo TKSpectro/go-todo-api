@@ -12,7 +12,13 @@ type Meta struct {
 	HasNextPage bool `json:"hasNextPage"`
 	HasPrevPage bool `json:"hasPrevPage"`
 
-	Filters map[string]string `json:"-"`
-	Search  string            `json:"-"`
-	Order   string            `json:"-"`
+	Filters []FilterEntry `json:"-"`
+	Search  string        `json:"-"`
+	Order   string        `json:"-"`
+}
+
+type FilterEntry struct {
+	Key      string
+	Operator string
+	Value    string
 }

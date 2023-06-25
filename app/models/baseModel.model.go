@@ -39,17 +39,51 @@ func FindWithMeta(dest interface{}, model interface{}, meta *pagination.Meta, wh
 		Find(dest)
 }
 
-func filtersToQuery(filters *map[string]string) string {
+func filtersToQuery(filters *[]pagination.FilterEntry) string {
 	query := ""
 
 	firstFilter := true
-	for key, value := range *filters {
-		if firstFilter {
-			query += key + " = '" + value + "'"
-			firstFilter = false
+
+	for _, filter := range *filters {
+		if !firstFilter {
+			query += " AND "
 		} else {
-			query += " AND " + key + " = '" + value + "'"
+			firstFilter = false
 		}
+
+		switch filter.Operator {
+		case "n":
+			filter.Operator = " IS "
+			filter.Value = "NULL"
+		case "nn":
+			filter.Operator = " IS NOT "
+			filter.Value = "NULL"
+		case "in":
+			filter.Operator = " IN "
+			filter.Value = "(" + filter.Value + ")"
+		case "nin":
+			filter.Operator = " NOT IN "
+			filter.Value = "(" + filter.Value + ")"
+		case "gt":
+			filter.Operator = " > "
+			filter.Value = "'" + filter.Value + "'"
+		case "gte":
+			filter.Operator = " >= "
+			filter.Value = "'" + filter.Value + "'"
+		case "lt":
+			filter.Operator = " < "
+			filter.Value = "'" + filter.Value + "'"
+		case "lte":
+			filter.Operator = " <= "
+			filter.Value = "'" + filter.Value + "'"
+		case "eq":
+			fallthrough // Go does not fall through by default
+		default:
+			filter.Operator = " = "
+			filter.Value = "'" + filter.Value + "'"
+		}
+
+		query += filter.Key + filter.Operator + filter.Value
 	}
 
 	return query
