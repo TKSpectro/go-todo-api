@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"github.com/TKSpectro/go-todo-api/app/types/pagination"
+	"github.com/TKSpectro/go-todo-api/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -18,11 +19,19 @@ func Pagination(c *fiber.Ctx) error {
 		limit = 10
 	}
 
+	// TODO: Sorting needs to be completed. This is just a placeholder/simple implementation
+	order := c.Query("order")
+	if order == "" {
+		order = "id asc"
+	}
+
 	c.Locals("meta", pagination.Meta{
 		Page:   page,
 		Limit:  limit,
 		Skip:   (page - 1) * limit,
 		Offset: (page - 1) * limit,
+		Order:  order,
+		Search: utils.ParseSearch(c.Query("search")),
 	})
 
 	return c.Next()

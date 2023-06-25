@@ -63,3 +63,7 @@ func GetTodo(c *fiber.Ctx) error {
 		Todo: *todo,
 	})
 }
+
+func CreateRandomTodo(c *fiber.Ctx) error {
+	return models.CreateRandomTodo(c.Locals("AccountId").(uint)).Error
+}

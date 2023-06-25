@@ -1,9 +1,8 @@
 package models
 
 import (
-	"crypto/rand"
-
 	"github.com/TKSpectro/go-todo-api/config/database"
+	"github.com/TKSpectro/go-todo-api/utils"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -11,7 +10,7 @@ import (
 
 type Account struct {
 	BaseModel
-	Email       string `gorm:"uniqueIndex;not null" json:"email"`
+	Email       string `gorm:"uniqueIndex;not null" json:"email" x-search:"true"`
 	Password    string `gorm:"not null" json:"-"` // json:"-" means that this field will not be serialized
 	Firstname   string `gorm:"" json:"firstname"`
 	Lastname    string `gorm:"" json:"lastname"`
@@ -59,14 +58,5 @@ const ALLOWED_SECRET_TOKEN_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQR
 const SECRET_TOKEN_MAX_LENGTH = 8
 
 func GenerateSecretToken() string {
-	ll := len(ALLOWED_SECRET_TOKEN_CHARS)
-	// 8 comes from db max length of secretToken
-	result := make([]byte, SECRET_TOKEN_MAX_LENGTH)
-
-	rand.Read(result)
-	for i := 0; i < SECRET_TOKEN_MAX_LENGTH; i++ {
-		result[i] = ALLOWED_SECRET_TOKEN_CHARS[int(result[i])%ll]
-	}
-
-	return string(result)
+	return utils.RandomString(SECRET_TOKEN_MAX_LENGTH, ALLOWED_SECRET_TOKEN_CHARS)
 }

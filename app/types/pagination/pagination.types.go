@@ -1,6 +1,7 @@
 package pagination
 
 type Meta struct {
+	Search      string `json:"-"`
 	Order       string `json:"-"`
 	Limit       int    `json:"limit"`
 	Offset      int    `json:"offset"`
