@@ -132,6 +132,32 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - example: '[amount][gte]=5 or [fk_id]=5. This can be given multiple times'
+        in: query
+        name: filters
+        type: string
+      - default: 10
+        example: 10
+        in: query
+        minimum: 1
+        name: limit
+        type: integer
+      - default: id asc
+        example: id asc
+        in: query
+        name: order
+        type: string
+      - default: 1
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - example: test@test.com
+        in: query
+        name: search
+        type: string
       produces:
       - application/json
       responses:
@@ -225,6 +251,32 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - example: '[amount][gte]=5 or [fk_id]=5. This can be given multiple times'
+        in: query
+        name: filters
+        type: string
+      - default: 10
+        example: 10
+        in: query
+        minimum: 1
+        name: limit
+        type: integer
+      - default: id asc
+        example: id asc
+        in: query
+        name: order
+        type: string
+      - default: 1
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - example: test@test.com
+        in: query
+        name: search
+        type: string
       produces:
       - application/json
       responses:

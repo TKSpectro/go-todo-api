@@ -16,6 +16,7 @@ import (
 // @Summary      List accounts
 // @Tags         accounts
 // @Accept       json
+// @Param		 meta query pagination.QueryParams false "Pagination Query Parameters"
 // @Produce      json
 // @Success      200  {array}  models.Account
 // @Router       /accounts [get]

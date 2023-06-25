@@ -28,6 +28,43 @@ const docTemplate = `{
                     "accounts"
                 ],
                 "summary": "List accounts",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "[amount][gte]=5 or [fk_id]=5. This can be given multiple times",
+                        "name": "filters",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "example": 10,
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "id asc",
+                        "example": "id asc",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 1,
+                        "example": 1,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "test@test.com",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -173,6 +210,43 @@ const docTemplate = `{
                     "todos"
                 ],
                 "summary": "List todos",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "[amount][gte]=5 or [fk_id]=5. This can be given multiple times",
+                        "name": "filters",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "example": 10,
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "id asc",
+                        "example": "id asc",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 1,
+                        "example": 1,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "test@test.com",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

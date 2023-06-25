@@ -16,6 +16,7 @@ import (
 // @Summary    List todos
 // @Tags       todos
 // @Accept     json
+// @Param	   meta query pagination.QueryParams false "Pagination Query Parameters"
 // @Produce    json
 // @Success    200  {object}  types.GetTodosResponse
 // @Router     /todos [get]
