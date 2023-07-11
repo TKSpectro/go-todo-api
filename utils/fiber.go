@@ -21,8 +21,3 @@ func ParseBodyAndValidate(c *fiber.Ctx, body interface{}) *core.RequestError {
 
 	return Validate(body)
 }
-
-func GetCurrentAccountId(c *fiber.Ctx) *uint {
-	id, _ := c.Locals("AccountId").(uint)
-	return &id
-}

@@ -5,8 +5,8 @@ import (
 
 	"github.com/TKSpectro/go-todo-api/app/models"
 	"github.com/TKSpectro/go-todo-api/app/types"
-	"github.com/TKSpectro/go-todo-api/app/types/pagination"
 	"github.com/TKSpectro/go-todo-api/core"
+	"github.com/TKSpectro/go-todo-api/utils/middleware/locals"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -22,16 +22,16 @@ import (
 // @Router       /accounts [get]
 func GetAccounts(c *fiber.Ctx) error {
 	var accounts = &[]models.Account{}
-	var meta = c.Locals("meta").(pagination.Meta)
+	var meta = locals.Meta(c)
 
-	err := models.FindAccounts(accounts, &meta).Error
+	err := models.FindAccounts(accounts, meta).Error
 	if err != nil {
 		return &core.INTERNAL_SERVER_ERROR
 	}
 
 	return c.JSON(&types.GetAccountsResponse{
 		Accounts: *accounts,
-		Meta:     meta,
+		Meta:     *meta,
 	})
 }
 

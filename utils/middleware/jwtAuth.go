@@ -5,6 +5,7 @@ import (
 
 	"github.com/TKSpectro/go-todo-api/core"
 	"github.com/TKSpectro/go-todo-api/utils/jwt"
+	"github.com/TKSpectro/go-todo-api/utils/middleware/locals"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -28,9 +29,7 @@ func Protected(c *fiber.Ctx) error {
 		return &core.UNAUTHORIZED
 	}
 
-	c.Locals("AccountId", payload.ID)
-	c.Locals("TokenSecret", payload.Secret)
-	c.Locals("TokenType", payload.Type)
+	c.Locals(locals.KEY_PAYLOAD, payload)
 
 	return c.Next()
 }

@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/TKSpectro/go-todo-api/app/types/pagination"
+	"github.com/TKSpectro/go-todo-api/utils/middleware/locals"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -26,7 +27,7 @@ func Pagination(c *fiber.Ctx) error {
 		order = "id asc"
 	}
 
-	c.Locals("meta", pagination.Meta{
+	c.Locals(locals.KEY_META, pagination.Meta{
 		Page:   page,
 		Limit:  limit,
 		Skip:   (page - 1) * limit,

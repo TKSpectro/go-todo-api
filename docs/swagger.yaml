@@ -18,6 +18,8 @@ definitions:
         type: array
       updatedAt:
         type: string
+    required:
+    - email
     type: object
   models.Todo:
     properties:

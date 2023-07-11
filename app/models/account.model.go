@@ -11,13 +11,19 @@ import (
 
 type Account struct {
 	BaseModel
-	Email       string `gorm:"uniqueIndex;not null" json:"email" x-search:"true"`
+	Email       string `gorm:"uniqueIndex;not null" json:"email" x-search:"true" validate:"required,email"`
 	Password    string `gorm:"not null" json:"-"` // json:"-" means that this field will not be serialized
 	Firstname   string `gorm:"" json:"firstname" x-search:"true"`
 	Lastname    string `gorm:"" json:"lastname" x-search:"true"`
 	TokenSecret string `gorm:"type:varchar(8)" json:"-"` // json:"-" means that this field will not be serialized
 
 	Todos []Todo `gorm:"foreignKey:AccountID" json:"todos"`
+}
+
+func (account *Account) WriteRemote(remote interface{}) {
+	account.Email = remote.(Account).Email
+	account.Firstname = remote.(Account).Firstname
+	account.Lastname = remote.(Account).Lastname
 }
 
 func FindAccounts(dest interface{}, meta *pagination.Meta) *gorm.DB {

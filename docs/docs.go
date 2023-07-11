@@ -391,6 +391,9 @@ const docTemplate = `{
     "definitions": {
         "models.Account": {
             "type": "object",
+            "required": [
+                "email"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"

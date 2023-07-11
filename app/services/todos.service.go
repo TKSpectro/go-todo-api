@@ -5,9 +5,9 @@ import (
 
 	"github.com/TKSpectro/go-todo-api/app/models"
 	"github.com/TKSpectro/go-todo-api/app/types"
-	"github.com/TKSpectro/go-todo-api/app/types/pagination"
 	"github.com/TKSpectro/go-todo-api/core"
 	"github.com/TKSpectro/go-todo-api/utils"
+	"github.com/TKSpectro/go-todo-api/utils/middleware/locals"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -22,17 +22,17 @@ import (
 // @Success    200  {object}  types.GetTodosResponse
 // @Router     /todos [get]
 func GetTodos(c *fiber.Ctx) error {
-	var meta = c.Locals("meta").(pagination.Meta)
+	var meta = locals.Meta(c)
 
 	var todos = &[]models.Todo{}
-	err := models.FindTodosByAccount(todos, &meta, c.Locals("AccountId").(uint)).Error
+	err := models.FindTodosByAccount(todos, meta, locals.JwtPayload(c).ID).Error
 	if err != nil {
 		return &core.INTERNAL_SERVER_ERROR
 	}
 
 	return c.JSON(&types.GetTodosResponse{
 		Todos: *todos,
-		Meta:  meta,
+		Meta:  *meta,
 	})
 }
 
@@ -53,7 +53,7 @@ func GetTodo(c *fiber.Ctx) error {
 		return &core.BAD_REQUEST
 	}
 
-	err := models.FindTodoByID(todo, remoteId, c.Locals("AccountId").(uint)).Error
+	err := models.FindTodoByID(todo, remoteId, locals.JwtPayload(c).ID).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &core.NOT_FOUND
@@ -67,7 +67,7 @@ func GetTodo(c *fiber.Ctx) error {
 }
 
 func CreateRandomTodo(c *fiber.Ctx) error {
-	return models.CreateRandomTodo(c.Locals("AccountId").(uint)).Error
+	return models.CreateRandomTodo(locals.JwtPayload(c).ID).Error
 }
 
 // CreateTodo    godoc
@@ -88,7 +88,7 @@ func CreateTodo(c *fiber.Ctx) error {
 
 	var todo = &models.Todo{}
 	todo.WriteRemote(remoteData.Todo)
-	todo.AccountID = c.Locals("AccountId").(uint)
+	todo.AccountID = locals.JwtPayload(c).ID
 
 	err := models.CreateTodo(todo).Error
 	if err != nil {
@@ -118,18 +118,18 @@ func UpdateTodo(c *fiber.Ctx) error {
 		return &core.BAD_REQUEST
 	}
 
-	err := models.FindTodoByID(todo, remoteId, c.Locals("AccountId").(uint)).Error
+	var remoteData = &types.UpdateTodoRequest{}
+	err := c.BodyParser(remoteData)
+	if err != nil {
+		return &core.BAD_REQUEST
+	}
+
+	err = models.FindTodoByID(todo, remoteId, locals.JwtPayload(c).ID).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &core.NOT_FOUND
 		}
 		return &core.INTERNAL_SERVER_ERROR
-	}
-
-	var remoteData = &types.UpdateTodoRequest{}
-	err = c.BodyParser(remoteData)
-	if err != nil {
-		return &core.BAD_REQUEST
 	}
 
 	todo.WriteRemote(remoteData.Todo)
@@ -161,7 +161,7 @@ func DeleteTodo(c *fiber.Ctx) error {
 		return &core.BAD_REQUEST
 	}
 
-	err := models.FindTodoByID(todo, remoteId, c.Locals("AccountId").(uint)).Error
+	err := models.FindTodoByID(todo, remoteId, locals.JwtPayload(c).ID).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &core.NOT_FOUND

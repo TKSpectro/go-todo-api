@@ -9,6 +9,7 @@ import (
 	"github.com/TKSpectro/go-todo-api/core"
 	"github.com/TKSpectro/go-todo-api/utils"
 	"github.com/TKSpectro/go-todo-api/utils/jwt"
+	"github.com/TKSpectro/go-todo-api/utils/middleware/locals"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -23,25 +24,22 @@ import (
 // @Success      200 {object} types.AuthResponse
 // @Router       /auth/register [post]
 func Register(c *fiber.Ctx) error {
-	remote := new(types.RegisterDTO)
+	remoteData := types.RegisterDTO{}
 
-	if err := utils.ParseBodyAndValidate(c, remote); err != nil {
+	if err := utils.ParseBodyAndValidate(c, remoteData); err != nil {
 		return err
 	}
 
-	err := models.FindAccountByEmail(&struct{ ID string }{}, remote.Account.Email).Error
+	err := models.FindAccountByEmail(&struct{ ID string }{}, remoteData.Account.Email).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return &core.ACCOUNT_WITH_EMAIL_ALREADY_EXISTS
 	}
 
-	account := &models.Account{
-		Email:       remote.Account.Email,
-		TokenSecret: models.GenerateSecretToken(),
-		Firstname:   remote.Account.Firstname,
-		Lastname:    remote.Account.Lastname,
-	}
+	account := &models.Account{}
+	account.WriteRemote(&remoteData.Account)
 
-	hashedPassword, err := models.HashPassword(remote.Account.Password)
+	account.TokenSecret = models.GenerateSecretToken()
+	hashedPassword, err := models.HashPassword(remoteData.Account.Password)
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -79,21 +77,21 @@ func Register(c *fiber.Ctx) error {
 // @Success      200 {object} types.AuthResponse
 // @Router       /auth/login [put]
 func Login(c *fiber.Ctx) error {
-	remote := new(types.LoginDTO)
+	remoteData := types.LoginDTO{}
 
-	if err := utils.ParseBodyAndValidate(c, remote); err != nil {
+	if err := utils.ParseBodyAndValidate(c, remoteData); err != nil {
 		return err
 	}
 
 	account := &models.Account{}
-	if err := models.FindAccountByEmail(account, remote.Account.Email).Error; err != nil {
+	if err := models.FindAccountByEmail(account, remoteData.Account.Email).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &core.NOT_FOUND
 		}
 		return err
 	}
 
-	if !models.CheckPasswordHash(remote.Account.Password, account.Password) {
+	if !models.CheckPasswordHash(remoteData.Account.Password, account.Password) {
 		return &core.AUTH_LOGIN_WRONG_PASSWORD
 	}
 
@@ -123,18 +121,16 @@ func Login(c *fiber.Ctx) error {
 // @Success      200 {object} types.AuthResponse
 // @Router       /auth/refresh [put]
 func Refresh(c *fiber.Ctx) error {
-	var accountId = c.Locals("AccountId").(uint)
-	var tokenType = c.Locals("TokenType").(string)
-	var tokenSecret = c.Locals("TokenSecret").(string)
+	var tokenPayload = locals.JwtPayload(c)
 
-	if tokenType != "refresh" {
+	if tokenPayload.Type != "refresh" {
 		return &core.WRONG_REFRESH_TOKEN
 	}
 
 	account := &models.Account{}
 	if err := database.DB.Model(account).Take(account, &models.Account{
-		BaseModel:   models.BaseModel{ID: accountId},
-		TokenSecret: tokenSecret,
+		BaseModel:   models.BaseModel{ID: tokenPayload.ID},
+		TokenSecret: tokenPayload.Secret,
 	}).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &core.UNAUTHORIZED
