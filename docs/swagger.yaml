@@ -21,6 +21,8 @@ definitions:
     type: object
   models.Todo:
     properties:
+      completed:
+        type: boolean
       createdAt:
         type: string
       description:
@@ -30,9 +32,12 @@ definitions:
       id:
         type: integer
       title:
+        minLength: 1
         type: string
       updatedAt:
         type: string
+    required:
+    - title
     type: object
   pagination.Meta:
     properties:
@@ -68,6 +73,16 @@ definitions:
         type: string
       token:
         type: string
+    type: object
+  types.CreateTodoRequest:
+    properties:
+      todo:
+        $ref: '#/definitions/models.Todo'
+    type: object
+  types.CreateTodoResponse:
+    properties:
+      todo:
+        $ref: '#/definitions/models.Todo'
     type: object
   types.GetTodoResponse:
     properties:
@@ -122,6 +137,16 @@ definitions:
     required:
     - email
     - password
+    type: object
+  types.UpdateTodoRequest:
+    properties:
+      todo:
+        $ref: '#/definitions/models.Todo'
+    type: object
+  types.UpdateTodoResponse:
+    properties:
+      todo:
+        $ref: '#/definitions/models.Todo'
     type: object
 info:
   contact: {}
@@ -287,7 +312,46 @@ paths:
       summary: List todos
       tags:
       - todos
+    post:
+      consumes:
+      - application/json
+      description: Create todo
+      parameters:
+      - description: Todo
+        in: body
+        name: todo
+        required: true
+        schema:
+          $ref: '#/definitions/types.CreateTodoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.CreateTodoResponse'
+      summary: Create todo
+      tags:
+      - todos
   /todos/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete todo
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete todo
+      tags:
+      - todos
     get:
       consumes:
       - application/json
@@ -306,6 +370,32 @@ paths:
           schema:
             $ref: '#/definitions/types.GetTodoResponse'
       summary: Get todo
+      tags:
+      - todos
+    put:
+      consumes:
+      - application/json
+      description: Update todo
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Todo
+        in: body
+        name: todo
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateTodoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.UpdateTodoResponse'
+      summary: Update todo
       tags:
       - todos
 swagger: "2.0"

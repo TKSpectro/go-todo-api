@@ -10,6 +10,7 @@ type RequestError struct {
 	Code       int    `json:"code"`
 	StatusCode int    `json:"statusCode"`
 	Message    string `json:"message"`
+	Detail     string `json:"detail,omitempty"`
 }
 
 func (r *RequestError) Error() string {
@@ -32,3 +33,9 @@ var (
 
 	ACCOUNT_WITH_EMAIL_ALREADY_EXISTS = RequestError{Code: 1100, StatusCode: fiber.StatusBadRequest, Message: "An account with this email already exists."}
 )
+
+// Error from var Error but pass details
+func RequestErrorFrom(err RequestError, detail string) *RequestError {
+	err.Detail = detail
+	return &err
+}

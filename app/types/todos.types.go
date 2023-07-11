@@ -13,3 +13,19 @@ type GetTodosResponse struct {
 type GetTodoResponse struct {
 	Todo models.Todo `json:"todo"`
 }
+
+type CreateTodoRequest struct {
+	Todo models.Todo `json:"todo"`
+}
+
+type CreateTodoResponse struct {
+	Todo models.Todo `json:"todo"`
+}
+
+type UpdateTodoRequest struct {
+	Todo models.Todo `json:"todo"`
+}
+
+type UpdateTodoResponse struct {
+	Todo models.Todo `json:"todo"`
+}

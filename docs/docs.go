@@ -255,6 +255,38 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Create todo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "todos"
+                ],
+                "summary": "Create todo",
+                "parameters": [
+                    {
+                        "description": "Todo",
+                        "name": "todo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.CreateTodoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.CreateTodoResponse"
+                        }
+                    }
+                }
             }
         },
         "/todos/{id}": {
@@ -285,6 +317,72 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/types.GetTodoResponse"
                         }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update todo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "todos"
+                ],
+                "summary": "Update todo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Todo ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Todo",
+                        "name": "todo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.UpdateTodoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.UpdateTodoResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete todo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "todos"
+                ],
+                "summary": "Delete todo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Todo ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
                     }
                 }
             }
@@ -322,7 +420,13 @@ const docTemplate = `{
         },
         "models.Todo": {
             "type": "object",
+            "required": [
+                "title"
+            ],
             "properties": {
+                "completed": {
+                    "type": "boolean"
+                },
                 "createdAt": {
                     "type": "string"
                 },
@@ -336,7 +440,8 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1
                 },
                 "updatedAt": {
                     "type": "string"
@@ -394,6 +499,22 @@ const docTemplate = `{
                 },
                 "token": {
                     "type": "string"
+                }
+            }
+        },
+        "types.CreateTodoRequest": {
+            "type": "object",
+            "properties": {
+                "todo": {
+                    "$ref": "#/definitions/models.Todo"
+                }
+            }
+        },
+        "types.CreateTodoResponse": {
+            "type": "object",
+            "properties": {
+                "todo": {
+                    "$ref": "#/definitions/models.Todo"
                 }
             }
         },
@@ -474,6 +595,22 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 100,
                     "minLength": 6
+                }
+            }
+        },
+        "types.UpdateTodoRequest": {
+            "type": "object",
+            "properties": {
+                "todo": {
+                    "$ref": "#/definitions/models.Todo"
+                }
+            }
+        },
+        "types.UpdateTodoResponse": {
+            "type": "object",
+            "properties": {
+                "todo": {
+                    "$ref": "#/definitions/models.Todo"
                 }
             }
         }

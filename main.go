@@ -8,6 +8,7 @@ import (
 	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/core"
 	_ "github.com/TKSpectro/go-todo-api/docs"
+	"github.com/TKSpectro/go-todo-api/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -20,6 +21,8 @@ import (
 func main() {
 	database.Connect()
 	database.Migrate(&models.Account{}, &models.Todo{})
+
+	utils.RegisterCustomValidators()
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: ErrorHandler,
@@ -37,6 +40,7 @@ var ErrorHandler = func(c *fiber.Ctx, err error) error {
 	statusCode := fiber.StatusInternalServerError
 	code := 0
 	message := ""
+	detail := ""
 
 	// Retrieve the custom status code if it's a *fiber.Error
 	var e *fiber.Error
@@ -50,6 +54,7 @@ var ErrorHandler = func(c *fiber.Ctx, err error) error {
 		statusCode = requestError.StatusCode
 		code = requestError.Code
 		message = requestError.Message
+		detail = requestError.Detail
 	}
 
 	// Return status code with error message
@@ -57,5 +62,6 @@ var ErrorHandler = func(c *fiber.Ctx, err error) error {
 		"statusCode": statusCode,
 		"code":       code,
 		"error":      message,
+		"detail":     detail,
 	})
 }

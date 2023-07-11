@@ -10,5 +10,9 @@ import (
 func RegisterRoutesTodos(router fiber.Router) {
 	router.Get("/", middleware.Protected, middleware.Pagination, services.GetTodos)
 	router.Get("/:id", middleware.Protected, services.GetTodo)
+	router.Post("/", middleware.Protected, services.CreateTodo)
+	router.Put("/:id", middleware.Protected, services.UpdateTodo)
+	router.Delete("/:id", middleware.Protected, services.DeleteTodo)
+
 	router.Post("/random", middleware.Protected, services.CreateRandomTodo)
 }
