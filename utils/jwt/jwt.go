@@ -1,7 +1,6 @@
 package jwt
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
@@ -12,10 +11,18 @@ import (
 
 // TokenPayload defines the payload for the token
 type TokenPayload struct {
-	ID     uint
-	Type   string
-	Secret string
+	AccountID uint
+	Type      string
+	Secret    string
 }
+
+const (
+	CLAIM_EXPIRE = "exp"
+
+	CLAIM_ACCOUNT_ID = "accountID"
+	CLAIM_TYPE       = "type"
+	CLAIM_SECRET     = "tokenSecret"
+)
 
 // Generate generates the jwt token based on payload
 func Generate(payload *TokenPayload) string {
@@ -25,10 +32,10 @@ func Generate(payload *TokenPayload) string {
 	}
 
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"exp":         time.Now().Add(v).Unix(),
-		"ID":          payload.ID,
-		"type":        payload.Type,
-		"tokenSecret": payload.Secret,
+		CLAIM_EXPIRE:     time.Now().Add(v).Unix(),
+		CLAIM_ACCOUNT_ID: payload.AccountID,
+		CLAIM_TYPE:       payload.Type,
+		CLAIM_SECRET:     payload.Secret,
 	})
 
 	token, err := t.SignedString([]byte(config.JWT_TOKEN_SECRET))
@@ -67,18 +74,9 @@ func Verify(token string) (*TokenPayload, error) {
 		return nil, err
 	}
 
-	// Getting ID, it's an interface{} so I need to cast it to uint
-	id, ok := claims["ID"].(float64)
-	if !ok {
-		return nil, errors.New("something went wrong")
-	}
-
-	tokenType := claims["type"].(string)
-	secret := claims["tokenSecret"].(string)
-
 	return &TokenPayload{
-		ID:     uint(id),
-		Type:   tokenType,
-		Secret: secret,
+		AccountID: uint(claims[CLAIM_ACCOUNT_ID].(float64)),
+		Type:      claims[CLAIM_TYPE].(string),
+		Secret:    claims[CLAIM_SECRET].(string),
 	}, nil
 }

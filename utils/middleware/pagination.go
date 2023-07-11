@@ -27,7 +27,7 @@ func Pagination(c *fiber.Ctx) error {
 		order = "id asc"
 	}
 
-	c.Locals(locals.KEY_META, pagination.Meta{
+	c.Locals(locals.KEY_META, &pagination.Meta{
 		Page:   page,
 		Limit:  limit,
 		Skip:   (page - 1) * limit,

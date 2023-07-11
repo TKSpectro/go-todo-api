@@ -8,7 +8,7 @@ import (
 
 func ParseBody(c *fiber.Ctx, body interface{}) *core.RequestError {
 	if err := c.BodyParser(body); err != nil {
-		return &core.BAD_REQUEST
+		return core.RequestErrorFrom(&core.BAD_REQUEST, err.Error())
 	}
 
 	return nil

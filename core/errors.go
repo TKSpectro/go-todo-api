@@ -35,7 +35,7 @@ var (
 )
 
 // Error from var Error but pass details
-func RequestErrorFrom(err RequestError, detail string) *RequestError {
+func RequestErrorFrom(err *RequestError, detail string) *RequestError {
 	err.Detail = detail
-	return &err
+	return err
 }

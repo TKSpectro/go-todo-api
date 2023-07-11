@@ -24,7 +24,7 @@ import (
 // @Success      200 {object} types.AuthResponse
 // @Router       /auth/register [post]
 func Register(c *fiber.Ctx) error {
-	remoteData := types.RegisterDTO{}
+	remoteData := &types.RegisterDTO{}
 
 	if err := utils.ParseBodyAndValidate(c, remoteData); err != nil {
 		return err
@@ -50,14 +50,14 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	token := jwt.Generate(&jwt.TokenPayload{
-		ID:   account.ID,
-		Type: "auth",
+		AccountID: account.ID,
+		Type:      "auth",
 	})
 
 	refreshToken := jwt.Generate(&jwt.TokenPayload{
-		ID:     account.ID,
-		Type:   "refresh",
-		Secret: account.TokenSecret,
+		AccountID: account.ID,
+		Type:      "refresh",
+		Secret:    account.TokenSecret,
 	})
 
 	return c.JSON(&types.AuthResponse{
@@ -77,7 +77,7 @@ func Register(c *fiber.Ctx) error {
 // @Success      200 {object} types.AuthResponse
 // @Router       /auth/login [put]
 func Login(c *fiber.Ctx) error {
-	remoteData := types.LoginDTO{}
+	remoteData := &types.LoginDTO{}
 
 	if err := utils.ParseBodyAndValidate(c, remoteData); err != nil {
 		return err
@@ -96,13 +96,13 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	token := jwt.Generate(&jwt.TokenPayload{
-		ID: account.ID,
+		AccountID: account.ID,
 	})
 
 	refreshToken := jwt.Generate(&jwt.TokenPayload{
-		ID:     account.ID,
-		Type:   "refresh",
-		Secret: account.TokenSecret,
+		AccountID: account.ID,
+		Type:      "refresh",
+		Secret:    account.TokenSecret,
 	})
 
 	return c.JSON(&types.AuthResponse{
@@ -129,7 +129,7 @@ func Refresh(c *fiber.Ctx) error {
 
 	account := &models.Account{}
 	if err := database.DB.Model(account).Take(account, &models.Account{
-		BaseModel:   models.BaseModel{ID: tokenPayload.ID},
+		BaseModel:   models.BaseModel{ID: tokenPayload.AccountID},
 		TokenSecret: tokenPayload.Secret,
 	}).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -139,13 +139,13 @@ func Refresh(c *fiber.Ctx) error {
 	}
 
 	token := jwt.Generate(&jwt.TokenPayload{
-		ID: account.ID,
+		AccountID: account.ID,
 	})
 
 	refreshToken := jwt.Generate(&jwt.TokenPayload{
-		ID:     account.ID,
-		Type:   "refresh",
-		Secret: account.TokenSecret,
+		AccountID: account.ID,
+		Type:      "refresh",
+		Secret:    account.TokenSecret,
 	})
 
 	return c.JSON(&types.AuthResponse{
