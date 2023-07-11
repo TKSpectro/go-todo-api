@@ -20,7 +20,6 @@ type TokenPayload struct {
 // Generate generates the jwt token based on payload
 func Generate(payload *TokenPayload) string {
 	v, err := time.ParseDuration(config.JWT_TOKEN_EXP)
-
 	if err != nil {
 		panic("Invalid time duration. Should be time.ParseDuration string")
 	}
@@ -33,7 +32,6 @@ func Generate(payload *TokenPayload) string {
 	})
 
 	token, err := t.SignedString([]byte(config.JWT_TOKEN_SECRET))
-
 	if err != nil {
 		panic(err)
 	}
@@ -59,7 +57,6 @@ func Parse(token string) (*jwt.Token, error) {
 // Verify verifies the jwt token against the secret
 func Verify(token string) (*TokenPayload, error) {
 	parsed, err := Parse(token)
-
 	if err != nil {
 		return nil, err
 	}

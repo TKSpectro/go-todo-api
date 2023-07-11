@@ -20,8 +20,7 @@ var (
 )
 
 func getEnv(name string, fallback string) string {
-	err := godotenv.Load(".env")
-	if err != nil {
+	if err := godotenv.Load(".env"); err != nil {
 		fmt.Print("Error loading .env file")
 	}
 

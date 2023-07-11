@@ -16,9 +16,7 @@ import (
 var Validator = validator.New()
 
 func Validate(payload interface{}) *core.RequestError {
-	err := Validator.Struct(payload)
-
-	if err != nil {
+	if err := Validator.Struct(payload); err != nil {
 		var errors []string
 
 		for _, err := range err.(validator.ValidationErrors) {

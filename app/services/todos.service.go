@@ -25,8 +25,7 @@ func GetTodos(c *fiber.Ctx) error {
 	var meta = locals.Meta(c)
 
 	var todos = &[]models.Todo{}
-	err := models.FindTodosByAccount(todos, meta, locals.JwtPayload(c).ID).Error
-	if err != nil {
+	if err := models.FindTodosByAccount(todos, meta, locals.JwtPayload(c).ID).Error; err != nil {
 		return &core.INTERNAL_SERVER_ERROR
 	}
 
@@ -53,8 +52,7 @@ func GetTodo(c *fiber.Ctx) error {
 		return &core.BAD_REQUEST
 	}
 
-	err := models.FindTodoByID(todo, remoteId, locals.JwtPayload(c).ID).Error
-	if err != nil {
+	if err := models.FindTodoByID(todo, remoteId, locals.JwtPayload(c).ID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &core.NOT_FOUND
 		}
@@ -90,8 +88,7 @@ func CreateTodo(c *fiber.Ctx) error {
 	todo.WriteRemote(remoteData.Todo)
 	todo.AccountID = locals.JwtPayload(c).ID
 
-	err := models.CreateTodo(todo).Error
-	if err != nil {
+	if err := models.CreateTodo(todo).Error; err != nil {
 		return core.RequestErrorFrom(core.INTERNAL_SERVER_ERROR, err.Error())
 	}
 
@@ -119,13 +116,11 @@ func UpdateTodo(c *fiber.Ctx) error {
 	}
 
 	var remoteData = &types.UpdateTodoRequest{}
-	err := c.BodyParser(remoteData)
-	if err != nil {
+	if err := c.BodyParser(remoteData); err != nil {
 		return &core.BAD_REQUEST
 	}
 
-	err = models.FindTodoByID(todo, remoteId, locals.JwtPayload(c).ID).Error
-	if err != nil {
+	if err := models.FindTodoByID(todo, remoteId, locals.JwtPayload(c).ID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &core.NOT_FOUND
 		}
@@ -134,8 +129,7 @@ func UpdateTodo(c *fiber.Ctx) error {
 
 	todo.WriteRemote(remoteData.Todo)
 
-	err = models.UpdateTodo(todo).Error
-	if err != nil {
+	if err := models.UpdateTodo(todo).Error; err != nil {
 		return core.RequestErrorFrom(core.INTERNAL_SERVER_ERROR, err.Error())
 	}
 
@@ -161,16 +155,14 @@ func DeleteTodo(c *fiber.Ctx) error {
 		return &core.BAD_REQUEST
 	}
 
-	err := models.FindTodoByID(todo, remoteId, locals.JwtPayload(c).ID).Error
-	if err != nil {
+	if err := models.FindTodoByID(todo, remoteId, locals.JwtPayload(c).ID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &core.NOT_FOUND
 		}
 		return &core.INTERNAL_SERVER_ERROR
 	}
 
-	err = models.DeleteTodoByID(remoteId).Error
-	if err != nil {
+	if err := models.DeleteTodoByID(remoteId).Error; err != nil {
 		return &core.INTERNAL_SERVER_ERROR
 	}
 
