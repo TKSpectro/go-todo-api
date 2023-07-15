@@ -18,7 +18,8 @@ var (
 
 	JWT_TOKEN_SECRET = getEnv("JWT_TOKEN_SECRET", "secret")
 	// getEnv returns a string that we have to time.ParseDuration
-	JWT_TOKEN_EXP = getEnv("JWT_TOKEN_EXP", "15m")
+	JWT_TOKEN_EXP   = getEnv("JWT_TOKEN_EXP", "1h")
+	JWT_REFRESH_EXP = getEnv("JWT_REFRESH_EXP", "10m")
 )
 
 func getEnv(name string, fallback string) string {

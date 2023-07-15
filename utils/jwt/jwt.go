@@ -8,6 +8,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/TKSpectro/go-todo-api/app/models"
+	"github.com/TKSpectro/go-todo-api/app/types"
 	"github.com/TKSpectro/go-todo-api/config"
 	"github.com/TKSpectro/go-todo-api/core"
 	"github.com/google/uuid"
@@ -32,42 +34,66 @@ const (
 )
 
 // Generate generates the jwt token based on payload
-func Generate(payload *TokenPayload) (string, error) {
-	v, err := time.ParseDuration(config.JWT_TOKEN_EXP)
+func Generate(account *models.Account) (types.AuthResponseBody, error) {
+	tokenExpiration, err := time.ParseDuration(config.JWT_TOKEN_EXP)
 	if err != nil {
-		return "", &core.TIME_PARSE_ERROR
+		return types.AuthResponseBody{}, &core.TIME_PARSE_ERROR
+	}
+
+	refreshTokenExpiration, err := time.ParseDuration(config.JWT_REFRESH_EXP)
+	if err != nil {
+		return types.AuthResponseBody{}, &core.TIME_PARSE_ERROR
 	}
 
 	token, err := jwt.NewBuilder().
 		Issuer(`github.com/TKSpectro/go-todo-api`).
 		IssuedAt(time.Now()).
-		Expiration(time.Now().Add(v)).
-		Claim(CLAIM_ACCOUNT_ID, payload.AccountID).
-		Claim(CLAIM_TYPE, payload.Type).
-		Claim(CLAIM_SECRET, payload.Secret).
+		Expiration(time.Now().Add(tokenExpiration)).
+		Claim(CLAIM_ACCOUNT_ID, account.ID).
+		Claim(CLAIM_TYPE, "auth").
+		Claim(CLAIM_SECRET, account.TokenSecret).
 		Build()
 	if err != nil {
-		return "", core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
+		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
+	}
+
+	refreshToken, err := jwt.NewBuilder().
+		Issuer(`github.com/TKSpectro/go-todo-api`).
+		IssuedAt(time.Now()).
+		Expiration(time.Now().Add(refreshTokenExpiration)).
+		Claim(CLAIM_ACCOUNT_ID, account.ID).
+		Claim(CLAIM_TYPE, "refresh").
+		Claim(CLAIM_SECRET, account.TokenSecret).
+		Build()
+	if err != nil {
+		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
 	}
 
 	keySet, err := jwk.ReadFile("./jwk.json")
 	if err != nil {
-		return "", core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
+		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
 	}
 
 	// Get the last key in the set
 	jwkKey, ok := keySet.Key(keySet.Len() - 1)
 	if !ok {
-		return "", core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, "failed to get last key in set")
+		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, "failed to get last key in set")
 	}
 
-	// Sign a JWT!
 	signed, err := jwt.Sign(token, jwt.WithKey(jwa.RS256, jwkKey))
 	if err != nil {
-		return "", core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
+		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
 	}
 
-	return string(signed), nil
+	signedRefresh, err := jwt.Sign(refreshToken, jwt.WithKey(jwa.RS256, jwkKey))
+	if err != nil {
+		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
+	}
+
+	return types.AuthResponseBody{
+		Token:        string(signed),
+		RefreshToken: string(signedRefresh),
+	}, nil
 }
 
 func Parse(token string) (jwt.Token, error) {

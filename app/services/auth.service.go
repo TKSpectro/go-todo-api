@@ -53,28 +53,13 @@ func Register(c *fiber.Ctx) error {
 		return &core.INTERNAL_SERVER_ERROR
 	}
 
-	token, err := jwt.Generate(&jwt.TokenPayload{
-		AccountID: account.ID,
-		Type:      "auth",
-	})
-	if err != nil {
-		return err
-	}
-
-	refreshToken, err := jwt.Generate(&jwt.TokenPayload{
-		AccountID: account.ID,
-		Type:      "refresh",
-		Secret:    account.TokenSecret,
-	})
+	auth, err := jwt.Generate(account)
 	if err != nil {
 		return err
 	}
 
 	return c.JSON(&types.AuthResponse{
-		Auth: types.AuthResponseBody{
-			Token:        token,
-			RefreshToken: refreshToken,
-		},
+		Auth: auth,
 	})
 }
 
@@ -105,28 +90,13 @@ func Login(c *fiber.Ctx) error {
 		return &core.AUTH_LOGIN_WRONG_PASSWORD
 	}
 
-	token, err := jwt.Generate(&jwt.TokenPayload{
-		AccountID: account.ID,
-		Type:      "auth",
-	})
-	if err != nil {
-		return err
-	}
-
-	refreshToken, err := jwt.Generate(&jwt.TokenPayload{
-		AccountID: account.ID,
-		Type:      "refresh",
-		Secret:    account.TokenSecret,
-	})
+	auth, err := jwt.Generate(account)
 	if err != nil {
 		return err
 	}
 
 	return c.JSON(&types.AuthResponse{
-		Auth: types.AuthResponseBody{
-			Token:        token,
-			RefreshToken: refreshToken,
-		},
+		Auth: auth,
 	})
 }
 
@@ -155,28 +125,13 @@ func Refresh(c *fiber.Ctx) error {
 		return err
 	}
 
-	token, err := jwt.Generate(&jwt.TokenPayload{
-		AccountID: account.ID,
-		Type:      "auth",
-	})
-	if err != nil {
-		return err
-	}
-
-	refreshToken, err := jwt.Generate(&jwt.TokenPayload{
-		AccountID: account.ID,
-		Type:      "refresh",
-		Secret:    account.TokenSecret,
-	})
+	auth, err := jwt.Generate(account)
 	if err != nil {
 		return err
 	}
 
 	return c.JSON(&types.AuthResponse{
-		Auth: types.AuthResponseBody{
-			Token:        token,
-			RefreshToken: refreshToken,
-		},
+		Auth: auth,
 	})
 }
 
