@@ -1,10 +1,7 @@
 package services
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
-	"os"
 
 	"github.com/TKSpectro/go-todo-api/app/models"
 	"github.com/TKSpectro/go-todo-api/app/types"
@@ -13,8 +10,6 @@ import (
 	"github.com/TKSpectro/go-todo-api/utils"
 	"github.com/TKSpectro/go-todo-api/utils/jwt"
 	"github.com/TKSpectro/go-todo-api/utils/middleware/locals"
-	"github.com/lestrrat-go/jwx/v2/jwk"
-
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -136,45 +131,7 @@ func Refresh(c *fiber.Ctx) error {
 }
 
 func RotateJWK(c *fiber.Ctx) error {
-	// check if file exists with io package
-	if _, err := os.Stat("./jwk.json"); os.IsNotExist(err) {
-		// create file if not exists
-		file, err := os.Create("./jwk.json")
-		if err != nil {
-			fmt.Printf("failed to create jwk.json: %s\n", err)
-			return err
-		}
+	jwt.RotateJWK()
 
-		file.Write([]byte(`{}`))
-		defer file.Close()
-	}
-
-	// append the fresh key to the set
-	set, err := jwk.ReadFile("./jwk.json")
-	if err != nil {
-		if err.Error() == "failed to unmarshal JWK set: failed to parse sole key in key set" {
-			set = jwk.NewSet()
-		} else {
-			fmt.Printf("failed to read jwk.json: %s\n", err)
-			return err
-		}
-	}
-
-	key, err := jwt.GenerateNewJWK()
-	if err != nil {
-		return err
-	}
-	set.AddKey(key)
-
-	println("New key added to JWK set", key.KeyID())
-
-	enc, err := json.MarshalIndent(set, "", "    ")
-	if err != nil {
-		fmt.Printf("failed to marshal JWK set: %s\n", err)
-		return err
-	}
-
-	os.WriteFile("./jwk.json", []byte(enc), 0644)
-
-	return c.JSON(set)
+	return c.SendStatus(fiber.StatusOK)
 }

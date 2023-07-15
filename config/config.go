@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
@@ -20,6 +21,8 @@ var (
 	// getEnv returns a string that we have to time.ParseDuration
 	JWT_TOKEN_EXP   = getEnv("JWT_TOKEN_EXP", "1h")
 	JWT_REFRESH_EXP = getEnv("JWT_REFRESH_EXP", "10m")
+
+	ALLOWED_IPS = getEnvList("ALLOWED_IPS")
 )
 
 func getEnv(name string, fallback string) string {
@@ -38,4 +41,14 @@ func getEnv(name string, fallback string) string {
 	log.Println("Environment variable not found: " + name)
 
 	return ""
+}
+
+func getEnvList(name string) []string {
+	value := getEnv(name, "")
+
+	if value == "" {
+		return []string{}
+	}
+
+	return strings.Split(value, ",")
 }

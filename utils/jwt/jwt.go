@@ -2,19 +2,15 @@ package jwt
 
 import (
 	"context"
-	"crypto/rand"
-	"crypto/rsa"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/TKSpectro/go-todo-api/app/models"
 	"github.com/TKSpectro/go-todo-api/app/types"
 	"github.com/TKSpectro/go-todo-api/config"
 	"github.com/TKSpectro/go-todo-api/core"
-	"github.com/google/uuid"
+	"github.com/TKSpectro/go-todo-api/utils/jwk"
 	"github.com/lestrrat-go/jwx/v2/jwa"
-	"github.com/lestrrat-go/jwx/v2/jwk"
 	"github.com/lestrrat-go/jwx/v2/jwt"
 )
 
@@ -33,7 +29,21 @@ const (
 	CLAIM_SECRET     = "tokenSecret"
 )
 
-// Generate generates the jwt token based on payload
+// Instance of the pub/priv key sets. We keep them in memory so we don't have IO overhead on every request
+var JWKS jwk.JWK_DATA
+
+// Init initializes the jwk set from the jwk.json file
+func Init() {
+	JWKS = jwk.JWK_DATA{
+		PRV_SET: jwk.Read(),
+	}
+
+	JWKS.PUB_SET = jwk.PublicSetOf(JWKS.PRV_SET)
+
+	fmt.Println("JWKs initialized. Found keys:", JWKS.PRV_SET.Len())
+}
+
+// Generate generates both a token and a refresh token
 func Generate(account *models.Account) (types.AuthResponseBody, error) {
 	tokenExpiration, err := time.ParseDuration(config.JWT_TOKEN_EXP)
 	if err != nil {
@@ -69,13 +79,8 @@ func Generate(account *models.Account) (types.AuthResponseBody, error) {
 		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
 	}
 
-	keySet, err := jwk.ReadFile("./jwk.json")
-	if err != nil {
-		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
-	}
-
 	// Get the last key in the set
-	jwkKey, ok := keySet.Key(keySet.Len() - 1)
+	jwkKey, ok := JWKS.PRV_SET.Key(JWKS.PRV_SET.Len() - 1)
 	if !ok {
 		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, "failed to get last key in set")
 	}
@@ -96,27 +101,10 @@ func Generate(account *models.Account) (types.AuthResponseBody, error) {
 	}, nil
 }
 
+// Parse parses the jwt token (Validate against the public keys and return the token)
 func Parse(token string) (jwt.Token, error) {
-	raw, err := os.ReadFile("./jwk.json")
-	if err != nil {
-		fmt.Printf("failed to read jwk.json: %s\n", err)
-		return nil, err
-	}
-
-	privSet, err := jwk.Parse(raw)
-	if err != nil {
-		fmt.Printf("jwk.ParseKey failed: %s\n", err)
-		return nil, err
-	}
-
-	pubSet, err := jwk.PublicSetOf(privSet)
-	if err != nil {
-		fmt.Printf("jwk.PublicSetOf failed: %s\n", err)
-		return nil, err
-	}
-
 	// When parsing we do it against the public key
-	tok, err := jwt.Parse([]byte(token), jwt.WithKeySet(pubSet))
+	tok, err := jwt.Parse([]byte(token), jwt.WithKeySet(JWKS.PUB_SET))
 	if err != nil {
 		fmt.Printf("jwt.Parse failed: %s\n", err)
 		return nil, err
@@ -125,7 +113,7 @@ func Parse(token string) (jwt.Token, error) {
 	return tok, nil
 }
 
-// Verify verifies the jwt token against the secret
+// Verify Verifies the token and returns the payload
 func Verify(token string) (*TokenPayload, error) {
 	tok, err := Parse(token)
 	if err != nil {
@@ -144,21 +132,7 @@ func Verify(token string) (*TokenPayload, error) {
 	}, nil
 }
 
-func GenerateNewJWK() (jwk.Key, error) {
-	raw, err := rsa.GenerateKey(rand.Reader, 2048)
-	if err != nil {
-		fmt.Printf("failed to generate new RSA private key: %s\n", err)
-		return nil, err
-	}
-
-	key, err := jwk.FromRaw(raw)
-	if err != nil {
-		fmt.Printf("failed to create symmetric key: %s\n", err)
-		return nil, err
-	}
-
-	key.Set(jwk.KeyIDKey, uuid.New().String())
-	key.Set(jwk.AlgorithmKey, jwa.RS256)
-
-	return key, nil
+// RotateJWK rotates the jwk set (generates a new key and adds it to the set)
+func RotateJWK() {
+	jwk.Rotate(&JWKS)
 }

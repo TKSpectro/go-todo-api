@@ -9,6 +9,7 @@ import (
 	"github.com/TKSpectro/go-todo-api/core"
 	_ "github.com/TKSpectro/go-todo-api/docs"
 	"github.com/TKSpectro/go-todo-api/utils"
+	"github.com/TKSpectro/go-todo-api/utils/jwt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -21,6 +22,8 @@ import (
 func main() {
 	database.Connect()
 	database.Migrate(&models.Account{}, &models.Todo{})
+
+	jwt.Init()
 
 	utils.RegisterCustomValidators()
 
