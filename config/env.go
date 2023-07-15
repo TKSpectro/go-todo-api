@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -16,7 +17,8 @@ var (
 	DB_PORT          = getEnv("DB_LOCAL_PORT", "3306")
 
 	JWT_TOKEN_SECRET = getEnv("JWT_TOKEN_SECRET", "secret")
-	JWT_TOKEN_EXP    = getEnv("JWT_TOKEN_EXP", "10h")
+	// getEnv returns a string that we have to time.ParseDuration
+	JWT_TOKEN_EXP = getEnv("JWT_TOKEN_EXP", "15m")
 )
 
 func getEnv(name string, fallback string) string {
@@ -32,5 +34,7 @@ func getEnv(name string, fallback string) string {
 		return fallback
 	}
 
-	panic(fmt.Sprintf("Environment variable not found :: %v", name))
+	log.Println("Environment variable not found: " + name)
+
+	return ""
 }

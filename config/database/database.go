@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/TKSpectro/go-todo-api/config"
@@ -21,7 +22,7 @@ func Connect() {
 		NowFunc: func() time.Time { return time.Now().Local() },
 	})
 	if err != nil {
-		fmt.Println("[DATABASE]::CONNECTION_ERROR")
+		log.Println("[DATABASE]::CONNECTION_ERROR")
 		panic(err)
 	}
 

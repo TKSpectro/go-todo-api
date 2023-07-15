@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/TKSpectro/go-todo-api/config"
+	"github.com/TKSpectro/go-todo-api/core"
 	"github.com/google/uuid"
 	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwk"
@@ -31,10 +32,10 @@ const (
 )
 
 // Generate generates the jwt token based on payload
-func Generate(payload *TokenPayload) string {
+func Generate(payload *TokenPayload) (string, error) {
 	v, err := time.ParseDuration(config.JWT_TOKEN_EXP)
 	if err != nil {
-		panic("Invalid time duration. Should be time.ParseDuration string")
+		return "", &core.TIME_PARSE_ERROR
 	}
 
 	token, err := jwt.NewBuilder().
@@ -46,31 +47,27 @@ func Generate(payload *TokenPayload) string {
 		Claim(CLAIM_SECRET, payload.Secret).
 		Build()
 	if err != nil {
-		fmt.Printf("failed to build token: %s\n", err)
-		panic(err)
+		return "", core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
 	}
 
 	keySet, err := jwk.ReadFile("./jwk.json")
 	if err != nil {
-		fmt.Printf("failed to read jwk.json: %s\n", err)
-		panic(err)
+		return "", core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
 	}
 
 	// Get the last key in the set
 	jwkKey, ok := keySet.Key(keySet.Len() - 1)
 	if !ok {
-		fmt.Printf("failed to get last key in set: %s\n", err)
-		panic(err)
+		return "", core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, "failed to get last key in set")
 	}
 
 	// Sign a JWT!
 	signed, err := jwt.Sign(token, jwt.WithKey(jwa.RS256, jwkKey))
 	if err != nil {
-		fmt.Printf("failed to sign token: %s\n", err)
-		panic(err)
+		return "", core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
 	}
 
-	return string(signed)
+	return string(signed), nil
 }
 
 func Parse(token string) (jwt.Token, error) {
