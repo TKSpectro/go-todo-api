@@ -97,6 +97,7 @@ func Login(c *fiber.Ctx) error {
 
 	token := jwt.Generate(&jwt.TokenPayload{
 		AccountID: account.ID,
+		Type:      "auth",
 	})
 
 	refreshToken := jwt.Generate(&jwt.TokenPayload{
@@ -140,6 +141,7 @@ func Refresh(c *fiber.Ctx) error {
 
 	token := jwt.Generate(&jwt.TokenPayload{
 		AccountID: account.ID,
+		Type:      "auth",
 	})
 
 	refreshToken := jwt.Generate(&jwt.TokenPayload{
