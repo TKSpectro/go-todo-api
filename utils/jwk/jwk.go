@@ -1,8 +1,9 @@
 package jwk
 
 import (
+	"crypto/ecdsa"
+	"crypto/elliptic"
 	"crypto/rand"
-	"crypto/rsa"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -62,20 +63,20 @@ func PublicSetOf(set jwk.Set) jwk.Set {
 }
 
 func Generate() (jwk.Key, error) {
-	raw, err := rsa.GenerateKey(rand.Reader, 2048)
+	ecdsaKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
-		fmt.Printf("failed to generate new RSA private key: %s\n", err)
+		fmt.Printf("failed to generate new ECDSA private key: %s\n", err)
 		return nil, err
 	}
 
-	key, err := jwk.FromRaw(raw)
+	key, err := jwk.FromRaw(ecdsaKey)
 	if err != nil {
 		fmt.Printf("failed to create symmetric key: %s\n", err)
 		return nil, err
 	}
 
 	key.Set(jwk.KeyIDKey, uuid.New().String())
-	key.Set(jwk.AlgorithmKey, jwa.RS256)
+	key.Set(jwk.AlgorithmKey, jwa.ES256K)
 
 	return key, nil
 }

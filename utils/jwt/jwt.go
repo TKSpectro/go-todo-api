@@ -85,12 +85,12 @@ func Generate(account *models.Account) (types.AuthResponseBody, error) {
 		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, "failed to get last key in set")
 	}
 
-	signed, err := jwt.Sign(token, jwt.WithKey(jwa.RS256, jwkKey))
+	signed, err := jwt.Sign(token, jwt.WithKey(jwa.ES256K, jwkKey))
 	if err != nil {
 		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
 	}
 
-	signedRefresh, err := jwt.Sign(refreshToken, jwt.WithKey(jwa.RS256, jwkKey))
+	signedRefresh, err := jwt.Sign(refreshToken, jwt.WithKey(jwa.ES256K, jwkKey))
 	if err != nil {
 		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
 	}
