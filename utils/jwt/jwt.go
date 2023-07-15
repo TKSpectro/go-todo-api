@@ -83,8 +83,14 @@ func Parse(token string) (jwt.Token, error) {
 		panic(err)
 	}
 
-	// TODO: Gotta fix this
-	tok, err := jwt.Parse([]byte(token), jwt.WithKey(jwa.RS256, key))
+	pubkey, err := jwk.PublicKeyOf(key)
+	if err != nil {
+		fmt.Printf("failed to get public key: %s\n", err)
+		panic(err)
+	}
+
+	// When parsing we do it against the public key
+	tok, err := jwt.Parse([]byte(token), jwt.WithKey(jwa.RS256, pubkey))
 	if err != nil {
 		fmt.Printf("jwt.Parse failed: %s\n", err)
 		panic(err)
