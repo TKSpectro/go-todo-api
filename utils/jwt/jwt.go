@@ -2,10 +2,14 @@ package jwt
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/rsa"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/TKSpectro/go-todo-api/config"
+	"github.com/google/uuid"
 	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwk"
 	"github.com/lestrrat-go/jwx/v2/jwt"
@@ -25,19 +29,6 @@ const (
 	CLAIM_TYPE       = "type"
 	CLAIM_SECRET     = "tokenSecret"
 )
-
-// your JWK
-const jwkStr = `{
-		"kty": "RSA",
-		"n": "mmO0OvOPQ53HRxV4eHOkTTxLVfk6zcq8KAD86gbnydYBNO_Si4Q1twyvefd58-BaO4N4NCEA97QrYm57ThKCe8agLGwWPHhxgbu_SAuYQehXxkf4sWy7Q17kGFG5k5AfQGZBqTY-YaawQqLlF6ILVbWab_AoEF4yB7pI3AnNnXs",
-		"e": "AQAB",
-		"d": "RzsrI2vONJcuIyjPzVslehEQfRkhPWOFTjuudNc8yA25vs_LZ11XXx42M-KvXIqtdvngUsTLan2w6pgowcuecX3t_2wUx0GJJgARfkN7gsWIS3CyXZBEEMjLGVU4vHt5zNE3GJKo3hb1TwEiulpL_Ix6hfcTSJpEaBWrBxjxV-E",
-		"p": "5EA0bi6ui1H1wsG85oc7i9O7UH58WPIK_ytzBWXFIwcaSFFBqqNYNnZaHFsMe4cbHSBgShWHO3UueGVgOKmB8Q",
-		"q": "rSi7CosQZmj_RFIYW10ef7XTZsdpIdOXV9-1dThAJUvkslKiTfdU7T0IYYsJ2K58ekJqdpcoKAVLB2SZVvdqKw",
-		"dp": "S9yjEHPng1qsShzGQgB0ZBbtTOWdQpq_2OuCAStACFJWA-8t2h8MNJ3FeWMxlOTkuBuIpVbeaX6bAV0ATBTaoQ",
-		"dq": "ZssMJhkh1jm0d-FoVix0Y4oUAiqUzaDnciH6faiz47AnBnkporEV-HPH2ugII1qJyKZOvzHCg-eIf84HfWoI2w",
-		"qi": "lyVz1HI2b1IjzOMENkmUTaVEO6DM6usZi3c3_MobUUM05yyBhnHtPjWzqWn1uJ_Gt5bkJDdcpfvmkPAhKWEU9Q"
-	}`
 
 // Generate generates the jwt token based on payload
 func Generate(payload *TokenPayload) string {
@@ -59,10 +50,16 @@ func Generate(payload *TokenPayload) string {
 		panic(err)
 	}
 
-	//convert jwk in bytes and return a new key
-	jwkKey, err := jwk.ParseKey([]byte(jwkStr))
+	keySet, err := jwk.ReadFile("./jwk.json")
 	if err != nil {
-		fmt.Printf("jwk.ParseKey failed: %s\n", err)
+		fmt.Printf("failed to read jwk.json: %s\n", err)
+		panic(err)
+	}
+
+	// Get the last key in the set
+	jwkKey, ok := keySet.Key(keySet.Len() - 1)
+	if !ok {
+		fmt.Printf("failed to get last key in set: %s\n", err)
 		panic(err)
 	}
 
@@ -77,23 +74,29 @@ func Generate(payload *TokenPayload) string {
 }
 
 func Parse(token string) (jwt.Token, error) {
-	key, err := jwk.ParseKey([]byte(jwkStr))
+	raw, err := os.ReadFile("./jwk.json")
 	if err != nil {
-		fmt.Printf("jwk.ParseKey failed: %s\n", err)
-		panic(err)
+		fmt.Printf("failed to read jwk.json: %s\n", err)
+		return nil, err
 	}
 
-	pubkey, err := jwk.PublicKeyOf(key)
+	privSet, err := jwk.Parse(raw)
 	if err != nil {
-		fmt.Printf("failed to get public key: %s\n", err)
-		panic(err)
+		fmt.Printf("jwk.ParseKey failed: %s\n", err)
+		return nil, err
+	}
+
+	pubSet, err := jwk.PublicSetOf(privSet)
+	if err != nil {
+		fmt.Printf("jwk.PublicSetOf failed: %s\n", err)
+		return nil, err
 	}
 
 	// When parsing we do it against the public key
-	tok, err := jwt.Parse([]byte(token), jwt.WithKey(jwa.RS256, pubkey))
+	tok, err := jwt.Parse([]byte(token), jwt.WithKeySet(pubSet))
 	if err != nil {
 		fmt.Printf("jwt.Parse failed: %s\n", err)
-		panic(err)
+		return nil, err
 	}
 
 	return tok, nil
@@ -116,4 +119,23 @@ func Verify(token string) (*TokenPayload, error) {
 		Type:      claims[CLAIM_TYPE].(string),
 		Secret:    claims[CLAIM_SECRET].(string),
 	}, nil
+}
+
+func GenerateNewJWK() (jwk.Key, error) {
+	raw, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		fmt.Printf("failed to generate new RSA private key: %s\n", err)
+		return nil, err
+	}
+
+	key, err := jwk.FromRaw(raw)
+	if err != nil {
+		fmt.Printf("failed to create symmetric key: %s\n", err)
+		return nil, err
+	}
+
+	key.Set(jwk.KeyIDKey, uuid.New().String())
+	key.Set(jwk.AlgorithmKey, jwa.RS256)
+
+	return key, nil
 }
