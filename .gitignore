@@ -25,3 +25,5 @@ tmp/
 
 *.db
 .env
+
+jwk.json
