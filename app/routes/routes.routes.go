@@ -7,7 +7,6 @@ import (
 
 func Setup(app *fiber.App) {
 	app.Get("/", func(c *fiber.Ctx) error {
-		panic("test")
 		return c.SendString("Hello from root")
 	})
 
