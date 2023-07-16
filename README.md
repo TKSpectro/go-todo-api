@@ -17,3 +17,10 @@ The solution is to use the packages `"gopkg.in/guregu/null.v4/zero"` and `"gopkg
 And then use the types `zero.String` and `null.String` instead of `string`
 
 Because these will use a struct under the hood, we also want to overwrite the swagger documentation for these fields, so that it will show the correct type in the docs with `swaggertype:"string"` tag
+
+### Migrations
+
+<https://atlasgo.io/>
+
+1. Inspect `atlas schema inspect -u "maria://root:root@localhost:3307/go_api" --format '{{ sql . }}'  > schema.sql`
+2.

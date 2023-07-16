@@ -430,6 +430,9 @@ const docTemplate = `{
                 "completed": {
                     "type": "boolean"
                 },
+                "completedAt": {
+                    "type": "string"
+                },
                 "createdAt": {
                     "type": "string"
                 },

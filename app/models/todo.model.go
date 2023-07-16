@@ -5,6 +5,7 @@ import (
 	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/utils"
 
+	"gopkg.in/guregu/null.v4"
 	"gopkg.in/guregu/null.v4/zero"
 
 	"gorm.io/gorm"
@@ -15,6 +16,7 @@ type Todo struct {
 	Title       zero.String `gorm:"not null" json:"title" x-search:"true" swaggertype:"string" validate:"required,min=1"`
 	Description zero.String `gorm:"" json:"description" x-search:"true" swaggertype:"string"`
 	Completed   bool        `gorm:"default:false" json:"completed"`
+	CompletedAt null.Time   `gorm:"" json:"completedAt"`
 
 	AccountID uint `gorm:"not null" json:"fkAccountId"`
 	// Account   Account

@@ -16,3 +16,11 @@ run:
 
 .PHONY: build-run
 build-run: build run
+
+.PHONY: migrate-gen
+migrate-gen:
+	atlas migrate diff --env gorm $(name)
+
+.PHONY: migrate-up
+migrate-up:
+	atlas migrate apply --env local

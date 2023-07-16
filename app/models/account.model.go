@@ -12,10 +12,10 @@ import (
 type Account struct {
 	BaseModel
 	Email       string `gorm:"uniqueIndex;not null" json:"email" x-search:"true" validate:"required,email"`
-	Password    string `gorm:"not null" json:"-"` // json:"-" means that this field will not be serialized
+	Password    string `gorm:"not null" json:"-"`
 	Firstname   string `gorm:"" json:"firstname" x-search:"true"`
 	Lastname    string `gorm:"" json:"lastname" x-search:"true"`
-	TokenSecret string `gorm:"type:varchar(8)" json:"-"` // json:"-" means that this field will not be serialized
+	TokenSecret string `gorm:"type:varchar(8)" json:"-"`
 
 	Todos []Todo `gorm:"foreignKey:AccountID" json:"todos"`
 }

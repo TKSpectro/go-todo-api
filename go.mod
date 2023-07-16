@@ -3,26 +3,34 @@ module github.com/TKSpectro/go-todo-api
 go 1.20
 
 require (
+	ariga.io/atlas-provider-gorm v0.0.0-20230709083934-ffaa9ee78678
 	github.com/go-playground/validator/v10 v10.14.1
 	github.com/gofiber/fiber/v2 v2.47.0
 	github.com/gofiber/swagger v0.1.12
 	github.com/joho/godotenv v1.5.1
 	github.com/lestrrat-go/jwx/v2 v2.0.11
 	github.com/swaggo/swag v1.16.1
-	golang.org/x/crypto v0.10.0
+	golang.org/x/crypto v0.11.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.2-0.20230530020048-26663ab9bf55
 )
 
 require (
+	ariga.io/atlas-go-sdk v0.0.0-20230709063453-1058d6508503 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
+	github.com/jackc/pgpassfile v1.0.0 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
+	github.com/jackc/pgx/v5 v5.3.1 // indirect
 	github.com/lestrrat-go/blackmagic v1.0.1 // indirect
 	github.com/lestrrat-go/httpcc v1.0.1 // indirect
 	github.com/lestrrat-go/httprc v1.0.4 // indirect
 	github.com/lestrrat-go/iter v1.0.2 // indirect
 	github.com/lestrrat-go/option v1.0.1 // indirect
+	github.com/mattn/go-sqlite3 v1.14.17 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
+	gorm.io/driver/postgres v1.5.2 // indirect
+	gorm.io/driver/sqlite v1.5.2 // indirect
 )
 
 require (
@@ -55,10 +63,10 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.48.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/net v0.11.0 // indirect
-	golang.org/x/sys v0.9.0 // indirect
-	golang.org/x/text v0.10.0 // indirect
-	golang.org/x/tools v0.10.0 // indirect
+	golang.org/x/net v0.12.0 // indirect
+	golang.org/x/sys v0.10.0 // indirect
+	golang.org/x/text v0.11.0 // indirect
+	golang.org/x/tools v0.11.0 // indirect
 	gopkg.in/guregu/null.v4 v4.0.0
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

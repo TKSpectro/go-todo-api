@@ -25,6 +25,8 @@ definitions:
     properties:
       completed:
         type: boolean
+      completedAt:
+        type: string
       createdAt:
         type: string
       description:
