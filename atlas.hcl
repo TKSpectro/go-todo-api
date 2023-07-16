@@ -22,6 +22,7 @@ env "gorm" {
 
 env "local" {
     url = "maria://root:root@localhost:3307/go_api"
+    dev = "docker://maria/latest/dev"
     migration {
         dir = "file://migrations?format=golang-migrate"
     }

@@ -20,7 +20,23 @@ Because these will use a struct under the hood, we also want to overwrite the sw
 
 ### Migrations
 
-<https://atlasgo.io/>
+We use [Atlas](https://atlasgo.io/) for schema based migrations.
+Because we use GORM as our ORM, we can use the <https://atlasgo.io/guides/orms/gorm> package to generate migrations directly from our models.
+The configuration for this happens in `atlas.hcl` and `loader/atlasGorm.go`
 
-1. Inspect `atlas schema inspect -u "maria://root:root@localhost:3307/go_api" --format '{{ sql . }}'  > schema.sql`
-2.
+We wrap the most common Atlas commands in the Makefile, so that we can easily run them.
+The commands are:
+
+```bash
+# Generate a new migration file based on the current models
+make migrate-gen name=<migration-name>
+
+# Generate a new empty migration file
+make migrate-new name=<migration-name>
+
+# Apply all migrations up to the latest version
+make migrate-up
+
+# Reverse all migrations down to the given version (version is the timestamp of the migration file)
+make migrate-down version=<version>
+```
