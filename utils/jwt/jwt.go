@@ -45,20 +45,10 @@ func Init() {
 
 // Generate generates both a token and a refresh token
 func Generate(account *models.Account) (types.AuthResponseBody, error) {
-	tokenExpiration, err := time.ParseDuration(config.JWT_TOKEN_EXP)
-	if err != nil {
-		return types.AuthResponseBody{}, &core.TIME_PARSE_ERROR
-	}
-
-	refreshTokenExpiration, err := time.ParseDuration(config.JWT_REFRESH_EXP)
-	if err != nil {
-		return types.AuthResponseBody{}, &core.TIME_PARSE_ERROR
-	}
-
 	token, err := jwt.NewBuilder().
 		Issuer(`github.com/TKSpectro/go-todo-api`).
 		IssuedAt(time.Now()).
-		Expiration(time.Now().Add(tokenExpiration)).
+		Expiration(time.Now().Add(config.JWT_TOKEN_EXP)).
 		Claim(CLAIM_ACCOUNT_ID, account.ID).
 		Claim(CLAIM_TYPE, "auth").
 		Claim(CLAIM_SECRET, account.TokenSecret).
@@ -70,7 +60,7 @@ func Generate(account *models.Account) (types.AuthResponseBody, error) {
 	refreshToken, err := jwt.NewBuilder().
 		Issuer(`github.com/TKSpectro/go-todo-api`).
 		IssuedAt(time.Now()).
-		Expiration(time.Now().Add(refreshTokenExpiration)).
+		Expiration(time.Now().Add(config.JWT_REFRESH_EXP)).
 		Claim(CLAIM_ACCOUNT_ID, account.ID).
 		Claim(CLAIM_TYPE, "refresh").
 		Claim(CLAIM_SECRET, account.TokenSecret).
