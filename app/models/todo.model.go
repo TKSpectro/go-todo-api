@@ -16,7 +16,7 @@ type Todo struct {
 	Title       zero.String `gorm:"not null" json:"title" x-search:"true" swaggertype:"string" validate:"required,min=1"`
 	Description zero.String `gorm:"" json:"description" x-search:"true" swaggertype:"string"`
 	Completed   bool        `gorm:"default:false" json:"completed"`
-	CompletedAt null.Time   `gorm:"" json:"completedAt"`
+	CompletedAt null.Time   `gorm:"" json:"completedAt" swaggertype:"string" format:"date-time"`
 
 	AccountID uint `gorm:"not null" json:"fkAccountId"`
 	// Account   Account
@@ -26,6 +26,7 @@ func (todo *Todo) WriteRemote(remote interface{}) {
 	todo.Title = remote.(Todo).Title
 	todo.Description = remote.(Todo).Description
 	todo.Completed = remote.(Todo).Completed
+	todo.CompletedAt = remote.(Todo).CompletedAt
 }
 
 func FindTodosByAccount(dest interface{}, meta *pagination.Meta, accountID uint) *gorm.DB {

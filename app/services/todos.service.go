@@ -116,8 +116,8 @@ func UpdateTodo(c *fiber.Ctx) error {
 	}
 
 	var remoteData = &types.UpdateTodoRequest{}
-	if err := c.BodyParser(remoteData); err != nil {
-		return &core.BAD_REQUEST
+	if err := utils.ParseBodyAndValidate(c, remoteData); err != nil {
+		return err
 	}
 
 	if err := models.FindTodoByID(todo, remoteId, locals.JwtPayload(c).AccountID).Error; err != nil {

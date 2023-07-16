@@ -26,6 +26,7 @@ definitions:
       completed:
         type: boolean
       completedAt:
+        format: date-time
         type: string
       createdAt:
         type: string

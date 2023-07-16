@@ -431,7 +431,8 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "completedAt": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "date-time"
                 },
                 "createdAt": {
                     "type": "string"
