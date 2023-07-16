@@ -35,7 +35,8 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	account := &models.Account{}
-	account.WriteRemote(&remoteData.Account)
+	// Convert remoteData.Account from RegisterDTOBody to Account type
+	account.WriteRemote(utils.Convert(models.Account{}, &remoteData.Account))
 
 	account.TokenSecret = models.GenerateSecretToken()
 	hashedPassword, err := models.HashPassword(remoteData.Account.Password)
