@@ -7,6 +7,7 @@ import (
 
 func Setup(app *fiber.App) {
 	app.Get("/", func(c *fiber.Ctx) error {
+		panic("test")
 		return c.SendString("Hello from root")
 	})
 
@@ -22,6 +23,4 @@ func Setup(app *fiber.App) {
 
 	RegisterRoutesAccounts(api.Group("/accounts"))
 	RegisterRoutesTodos(api.Group("/todos"))
-
-	// TODO: Maybe add a safety function that counts all files in /router and makes sure that all files where called/included somehow
 }

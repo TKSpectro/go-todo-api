@@ -25,7 +25,6 @@ func Protected(c *fiber.Ctx) error {
 
 	payload, err := jwt.Verify(chunks[1])
 	if err != nil {
-		// TODO: Only send the error message in development mode
 		return core.RequestErrorFrom(&core.UNAUTHORIZED, err.Error())
 	}
 

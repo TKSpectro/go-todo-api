@@ -13,6 +13,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
 // @title           fiber-api
@@ -32,6 +33,9 @@ func main() {
 	})
 
 	app.Use(logger.New())
+
+	// Recover from panics anywhere in the chain and handle the control to the centralized ErrorHandler
+	app.Use(recover.New())
 
 	routes.Setup(app)
 
