@@ -29,7 +29,7 @@ func Register(c *fiber.Ctx) error {
 		return err
 	}
 
-	err := models.FindAccountByEmail(&struct{ ID string }{}, remoteData.Account.Email).Error
+	err := models.FindAccountByEmail(struct{}{}, remoteData.Account.Email).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return &core.ACCOUNT_WITH_EMAIL_ALREADY_EXISTS
 	}
@@ -135,4 +135,20 @@ func RotateJWK(c *fiber.Ctx) error {
 	jwt.RotateJWK()
 
 	return c.SendStatus(fiber.StatusOK)
+}
+
+func Me(c *fiber.Ctx) error {
+	var account = &models.Account{}
+
+	err := models.FindAccountByID(account, locals.JwtPayload(c).AccountID).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return &core.NOT_FOUND
+		}
+		return &core.INTERNAL_SERVER_ERROR
+	}
+
+	return c.JSON(&types.GetAccountResponse{
+		Account: *account,
+	})
 }

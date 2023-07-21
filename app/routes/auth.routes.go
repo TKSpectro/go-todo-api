@@ -11,6 +11,7 @@ func RegisterRoutesAuth(router fiber.Router) {
 	router.Put("/login", services.Login)
 	router.Post("/register", services.Register)
 	router.Put("/refresh", middleware.Protected, services.Refresh)
+	router.Get("/me", middleware.Protected, services.Me)
 
 	router.Put("/jwk-rotate", middleware.AllowedIps, services.RotateJWK)
 }

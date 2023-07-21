@@ -38,7 +38,7 @@ func FindAccount(dest interface{}, conditions ...interface{}) *gorm.DB {
 	return database.DB.Model(&Account{}).Take(dest, conditions...)
 }
 
-func FindAccountByID(dest interface{}, id string) *gorm.DB {
+func FindAccountByID[T string | uint](dest interface{}, id T) *gorm.DB {
 	return FindAccount(dest, "id = ?", id)
 }
 
