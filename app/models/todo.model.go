@@ -22,11 +22,11 @@ type Todo struct {
 	// Account   Account
 }
 
-func (todo *Todo) WriteRemote(remote interface{}) {
-	todo.Title = remote.(Todo).Title
-	todo.Description = remote.(Todo).Description
-	todo.Completed = remote.(Todo).Completed
-	todo.CompletedAt = remote.(Todo).CompletedAt
+func (todo *Todo) WriteRemote(remote Todo) {
+	todo.Title = remote.Title
+	todo.Description = remote.Description
+	todo.Completed = remote.Completed
+	todo.CompletedAt = remote.CompletedAt
 }
 
 func FindTodosByAccount(dest interface{}, meta *pagination.Meta, accountID uint) *gorm.DB {

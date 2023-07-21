@@ -36,9 +36,9 @@ func CopyCommonFields(destp, srcp interface{}) {
 }
 
 // Convert converts a given struct into another struct type (destStructType)
-// copying the common fields from the struct pointed to srcp to the struct
-// Based on https://stackoverflow.com/questions/59556480/convert-a-type-struct-a-to-b
-func Convert(destStructType, srcp interface{}) interface{} {
+// copying the common fields from the struct pointed to srcp to the returned struct.
+// Based on https://stackoverflow.com/questions/59556480/convert-a-type-struct-a-to-b and extended to be generic
+func Convert[T interface{}](destStructType T, srcp interface{}) T {
 	dest := reflect.New(reflect.TypeOf(destStructType)).Elem()
 	srcv := reflect.ValueOf(srcp).Elem()
 
@@ -52,5 +52,5 @@ func Convert(destStructType, srcp interface{}) interface{} {
 		dest.Field(i).Set(v)
 	}
 
-	return dest.Interface()
+	return dest.Interface().(T)
 }

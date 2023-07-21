@@ -20,10 +20,10 @@ type Account struct {
 	Todos []Todo `gorm:"foreignKey:AccountID" json:"todos"`
 }
 
-func (account *Account) WriteRemote(remote interface{}) {
-	account.Email = remote.(Account).Email
-	account.Firstname = remote.(Account).Firstname
-	account.Lastname = remote.(Account).Lastname
+func (account *Account) WriteRemote(remote Account) {
+	account.Email = remote.Email
+	account.Firstname = remote.Firstname
+	account.Lastname = remote.Lastname
 }
 
 func FindAccounts(dest interface{}, meta *pagination.Meta) *gorm.DB {
