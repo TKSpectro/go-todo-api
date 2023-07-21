@@ -18,7 +18,6 @@ import (
 
 // @title           fiber-api
 // @version         1.0
-
 // @BasePath  /api
 func main() {
 	database.Connect()

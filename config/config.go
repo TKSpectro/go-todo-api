@@ -18,7 +18,6 @@ var (
 	DB_NAME          = getEnv("DB_NAME", "go_api")
 	DB_PORT          = getEnv("DB_LOCAL_PORT", "3306")
 
-	JWT_TOKEN_SECRET = getEnv("JWT_TOKEN_SECRET", "secret")
 	// getEnv returns a string that we have to time.ParseDuration
 	JWT_TOKEN_EXP   = getEnvTimeDurationParse("JWT_TOKEN_EXP", "1h")
 	JWT_REFRESH_EXP = getEnvTimeDurationParse("JWT_REFRESH_EXP", "10m")

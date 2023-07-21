@@ -4,6 +4,7 @@
 *.dll
 *.so
 *.dylib
+go-todo-api
 
 # Test binary, built with `go test -c`
 *.test

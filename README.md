@@ -1,10 +1,48 @@
 # go-fiber-api
 
-```air``` for development
+## Development
 
-```swag init``` for generating docs
+### Prerequisites
 
-```make start``` and ```make stop``` for starting/stopping development database
+- [Go](https://golang.org/)
+
+- [Docker](https://www.docker.com/) (optional) - for running the database
+- [Make](https://www.gnu.org/software/make/) (optional) - for running the Makefile commands (shortcuts for other commands)
+- [Air](https://github.com/cosmtrek/air/) (optional) - for hot reloading while developing
+
+### Getting started
+
+1. Clone the repository
+
+```bash
+git clone
+```
+
+2. Install dependencies
+
+```bash
+go mod download
+```
+
+3. Create a `.env` file in the root of the project by copying the `.env.example` file and filling in the correct values
+
+```bash
+cp .env.example .env
+```
+
+4. Run the migrations
+
+```bash
+make migrate-up
+```
+
+5. Run the server
+
+```bash
+make run
+# or (if you have Air installed)
+air
+```
 
 ## Knowledge base
 
