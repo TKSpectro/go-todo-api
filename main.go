@@ -20,6 +20,12 @@ import (
 // @version         1.0
 // @BasePath  /api
 func main() {
+	app := Setup()
+
+	app.Listen(":3000")
+}
+
+func Setup() *fiber.App {
 	database.Connect()
 	database.Migrate(&models.Account{}, &models.Todo{})
 
@@ -38,7 +44,7 @@ func main() {
 
 	routes.Setup(app)
 
-	app.Listen(":3000")
+	return app
 }
 
 var ErrorHandler = func(c *fiber.Ctx, err error) error {
