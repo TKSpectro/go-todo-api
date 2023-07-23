@@ -11,6 +11,10 @@ import (
 )
 
 var (
+	isEnvLoaded = false
+)
+
+var (
 	PORT = getEnv("PORT", "3000")
 
 	DB_USER          = getEnv("DB_USER", "root")
@@ -26,8 +30,12 @@ var (
 )
 
 func getEnv(name string, fallback string) string {
-	if err := godotenv.Load(".env"); err != nil {
-		fmt.Print("Error loading .env file")
+	if !isEnvLoaded {
+		if err := godotenv.Load(".env"); err != nil {
+			fmt.Println("Error loading .env file")
+		} else {
+			isEnvLoaded = true
+		}
 	}
 
 	if value, exists := os.LookupEnv(name); exists {
