@@ -29,10 +29,10 @@ build-run: build run
 ################################ Swagger Docs ##################################
 ################################################################################
 
-# Will generate swagger docs in ./docs
+# Will generate swagger docs in ./api
 .PHONY: swag
 swag:
-	swag init
+	swag init -o ./api
 
 ################################################################################
 ######################## Atlas shortcuts (Migrations) ##########################

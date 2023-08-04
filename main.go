@@ -3,11 +3,11 @@ package main
 import (
 	"errors"
 
+	_ "github.com/TKSpectro/go-todo-api/api"
 	"github.com/TKSpectro/go-todo-api/app/models"
 	"github.com/TKSpectro/go-todo-api/app/routes"
 	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/core"
-	_ "github.com/TKSpectro/go-todo-api/docs"
 	"github.com/TKSpectro/go-todo-api/utils"
 	"github.com/TKSpectro/go-todo-api/utils/jwt"
 
