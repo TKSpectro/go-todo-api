@@ -9,6 +9,7 @@
 - [Docker](https://www.docker.com/) (optional) - for running the database
 - [Make](https://www.gnu.org/software/make/) (optional) - for running the Makefile commands (shortcuts for other commands)
 - [Air](https://github.com/cosmtrek/air/) (optional) - for hot reloading while developing
+- [Ginkgo](https://onsi.github.io/ginkgo/) (optional) - for running the tests
 
 ### Getting started
 

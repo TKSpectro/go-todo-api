@@ -1,0 +1,25 @@
+package services_test
+
+import (
+	"testing"
+
+	"github.com/TKSpectro/go-todo-api/pkg/app"
+	"github.com/gofiber/fiber/v2"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+)
+
+func TestServices(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Services Suite")
+}
+
+var App *fiber.App
+
+var _ = BeforeSuite(func() {
+	App = app.Setup()
+})
+
+var _ = AfterSuite(func() {
+	app.Shutdown(App)
+})

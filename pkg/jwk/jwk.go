@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/TKSpectro/go-todo-api/config"
 	"github.com/google/uuid"
 	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwk"
@@ -19,9 +20,14 @@ type JWK_DATA struct {
 }
 
 func Read() jwk.Set {
-	if _, err := os.Stat("./jwk.json"); os.IsNotExist(err) {
+	path := "./jwk.json"
+	if config.ROOT_PATH != "" {
+		path = config.ROOT_PATH + "/jwk.json"
+	}
+
+	if _, err := os.Stat(path); os.IsNotExist(err) {
 		// create file if not exists
-		file, err := os.Create("./jwk.json")
+		file, err := os.Create(path)
 		if err != nil {
 			fmt.Printf("failed to create jwk.json: %s\n", err)
 		}
@@ -30,7 +36,7 @@ func Read() jwk.Set {
 		defer file.Close()
 	}
 
-	set, err := jwk.ReadFile("./jwk.json")
+	set, err := jwk.ReadFile(path)
 	if err != nil {
 		if err.Error() == "failed to unmarshal JWK set: failed to parse sole key in key set" {
 			fmt.Println("jwk.json is empty, creating new set")
@@ -101,5 +107,10 @@ func Rotate(jwks *JWK_DATA) {
 		fmt.Printf("failed to marshal JWK set: %s\n", err)
 	}
 
-	os.WriteFile("./jwk.json", []byte(enc), 0644)
+	path := "./jwk.json"
+	if config.ROOT_PATH != "" {
+		path = config.ROOT_PATH + "/jwk.json"
+	}
+
+	os.WriteFile(path, []byte(enc), 0644)
 }

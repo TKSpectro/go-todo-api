@@ -32,3 +32,13 @@ func Connect() {
 func Migrate(tables ...interface{}) error {
 	return DB.AutoMigrate(tables...)
 }
+
+func Disconnect() {
+	sqlDB, err := DB.DB()
+	if err != nil {
+		log.Println("[DATABASE]::DISCONNECTION_ERROR")
+		panic(err)
+	}
+
+	sqlDB.Close()
+}

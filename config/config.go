@@ -15,7 +15,8 @@ var (
 )
 
 var (
-	PORT = getEnv("PORT", "3000")
+	ROOT_PATH = getEnv("GTA_ROOT_PATH", "")
+	PORT      = getEnv("PORT", "3000")
 
 	DB_USER          = getEnv("DB_USER", "root")
 	DB_ROOT_PASSWORD = getEnv("DB_ROOT_PASSWORD", "root")
@@ -31,8 +32,18 @@ var (
 
 func getEnv(name string, fallback string) string {
 	if !isEnvLoaded {
-		if err := godotenv.Load(".env"); err != nil {
+		path, _ := os.LookupEnv("GTA_ROOT_PATH")
+		path2, _ := os.Getwd()
+		println(path2)
+
+		envPath := ".env"
+		if path != "" {
+			envPath = path + "/.env"
+		}
+
+		if err := godotenv.Load(envPath); err != nil {
 			fmt.Println("Error loading .env file")
+			fmt.Println(err)
 		} else {
 			isEnvLoaded = true
 		}
