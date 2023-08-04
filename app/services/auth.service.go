@@ -7,9 +7,9 @@ import (
 	"github.com/TKSpectro/go-todo-api/app/types"
 	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/core"
+	"github.com/TKSpectro/go-todo-api/pkg/jwt"
+	"github.com/TKSpectro/go-todo-api/pkg/middleware/locals"
 	"github.com/TKSpectro/go-todo-api/utils"
-	"github.com/TKSpectro/go-todo-api/utils/jwt"
-	"github.com/TKSpectro/go-todo-api/utils/middleware/locals"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )

@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/TKSpectro/go-todo-api/app/services"
-	"github.com/TKSpectro/go-todo-api/utils/middleware"
+	"github.com/TKSpectro/go-todo-api/pkg/middleware"
 
 	"github.com/gofiber/fiber/v2"
 )

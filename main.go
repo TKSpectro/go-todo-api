@@ -8,8 +8,8 @@ import (
 	"github.com/TKSpectro/go-todo-api/app/routes"
 	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/core"
+	"github.com/TKSpectro/go-todo-api/pkg/jwt"
 	"github.com/TKSpectro/go-todo-api/utils"
-	"github.com/TKSpectro/go-todo-api/utils/jwt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"

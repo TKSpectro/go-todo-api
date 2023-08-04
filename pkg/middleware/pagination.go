@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/TKSpectro/go-todo-api/app/types/pagination"
-	"github.com/TKSpectro/go-todo-api/utils/middleware/locals"
+	"github.com/TKSpectro/go-todo-api/pkg/middleware/locals"
 
 	"github.com/gofiber/fiber/v2"
 )
