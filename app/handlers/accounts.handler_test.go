@@ -1,4 +1,4 @@
-package services_test
+package handlers_test
 
 import (
 	"encoding/json"
@@ -15,7 +15,7 @@ import (
 	. "github.com/onsi/gomega/gstruct"
 )
 
-var _ = Describe("Accounts.Service", Ordered, func() {
+var _ = Describe("Accounts.Handlers", Ordered, func() {
 	Describe("List", Ordered, func() {
 		var authToken string
 		BeforeAll(func() {

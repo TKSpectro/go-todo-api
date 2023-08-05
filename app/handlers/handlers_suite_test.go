@@ -1,4 +1,4 @@
-package services_test
+package handlers_test
 
 import (
 	"testing"
@@ -10,9 +10,9 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestServices(t *testing.T) {
+func TestHandlers(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Services Suite")
+	RunSpecs(t, "Handlers Suite")
 }
 
 var App *fiber.App
