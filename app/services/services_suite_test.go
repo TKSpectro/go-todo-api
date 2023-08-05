@@ -24,5 +24,7 @@ var _ = BeforeSuite(func() {
 })
 
 var _ = AfterSuite(func() {
+	test.ClearAllTables()
+
 	app.Shutdown(App)
 })

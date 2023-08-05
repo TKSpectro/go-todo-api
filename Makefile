@@ -31,7 +31,20 @@ build-run: build run
 
 .PHONY: test
 test:
-	GTA_ROOT_PATH=$(CURDIR) IS_TEST=true ginkgo -r 
+	GTA_ROOT_PATH=$(CURDIR) IS_TEST=true ginkgo -r $(ARGS)
+
+.PHONY: test-v
+test-v:
+	GTA_ROOT_PATH=$(CURDIR) IS_TEST=true ginkgo -r -v $(ARGS)
+
+.PHONY: test-ci
+test-ci:
+	GTA_ROOT_PATH=$(CURDIR) IS_TEST=true ginkgo -r --race --trace --json-report=report.json
+
+.PHONY: test-coverage
+test-coverage:
+	GTA_ROOT_PATH=$(CURDIR) IS_TEST=true ginkgo -r --cover
+	go tool cover -html=coverprofile.out
 
 ################################################################################
 ################################ Swagger Docs ##################################

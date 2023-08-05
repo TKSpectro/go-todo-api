@@ -27,3 +27,6 @@ tmp/
 .env
 
 jwk.json
+
+# Test report
+report.json

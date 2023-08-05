@@ -19,9 +19,12 @@ var testApp *fiber.App
 
 var _ = BeforeSuite(func() {
 	test.Setup()
+
 	testApp = app.Setup()
 })
 
 var _ = AfterSuite(func() {
+	test.ClearAllTables()
+
 	app.Shutdown(testApp)
 })

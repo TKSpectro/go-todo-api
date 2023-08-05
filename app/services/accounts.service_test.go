@@ -9,12 +9,13 @@ import (
 	"github.com/TKSpectro/go-todo-api/app/types"
 	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
+	"github.com/TKSpectro/go-todo-api/test"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gstruct"
 )
 
-var _ = Describe("Accounts.Service", func() {
+var _ = Describe("Accounts.Service", Ordered, func() {
 	Describe("List", Ordered, func() {
 		var authToken string
 		BeforeAll(func() {
@@ -62,5 +63,9 @@ var _ = Describe("Accounts.Service", func() {
 		AfterAll(func() {
 			database.DB.Exec("DELETE FROM accounts")
 		})
+	})
+
+	AfterAll(func() {
+		test.ClearAllTables()
 	})
 })
