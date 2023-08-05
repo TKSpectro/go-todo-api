@@ -31,7 +31,7 @@ build-run: build run
 
 .PHONY: test
 test:
-	GTA_ROOT_PATH=$(CURDIR) ginkgo -r 
+	GTA_ROOT_PATH=$(CURDIR) IS_TEST=true ginkgo -r 
 
 ################################################################################
 ################################ Swagger Docs ##################################
