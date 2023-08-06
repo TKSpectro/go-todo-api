@@ -5,8 +5,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/pkg/app/model"
+	"github.com/TKSpectro/go-todo-api/pkg/app/service"
 	"github.com/TKSpectro/go-todo-api/pkg/app/types"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
 	"github.com/TKSpectro/go-todo-api/test"
@@ -20,15 +20,16 @@ var _ = Describe("Accounts.Handler", Ordered, func() {
 		var authToken string
 		BeforeAll(func() {
 			pw, _ := model.HashPassword("123456")
-			account := model.Account{
+			account := &model.Account{
 				Email:     "accounts.list@turbomeet.xyz",
 				Password:  pw,
 				Firstname: "Accounts",
 				Lastname:  "List",
 			}
-			model.CreateAccount(&account)
+			accountService := service.NewAccountService(DB)
+			accountService.CreateAccount(account)
 
-			auth, _ := jwt.Generate(&account)
+			auth, _ := jwt.Generate(account)
 			authToken = auth.Token
 		})
 
@@ -61,7 +62,7 @@ var _ = Describe("Accounts.Handler", Ordered, func() {
 		})
 
 		AfterAll(func() {
-			database.DB.Exec("DELETE FROM accounts")
+			test.ClearTables([]string{"accounts"})
 		})
 	})
 

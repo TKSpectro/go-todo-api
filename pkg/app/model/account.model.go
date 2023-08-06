@@ -1,11 +1,9 @@
 package model
 
 import (
-	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/utils"
 
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 type Account struct {
@@ -23,10 +21,6 @@ func (account *Account) WriteRemote(remote Account) {
 	account.Email = remote.Email
 	account.Firstname = remote.Firstname
 	account.Lastname = remote.Lastname
-}
-
-func CreateAccount(account *Account) *gorm.DB {
-	return database.DB.Create(account)
 }
 
 func HashPassword(password string) (string, error) {

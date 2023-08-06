@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 
-	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/pkg/app/model"
 	"github.com/TKSpectro/go-todo-api/pkg/app/types"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
@@ -44,7 +43,7 @@ func (h *Handler) Register(c *fiber.Ctx) error {
 	}
 	account.Password = hashedPassword
 
-	if err := model.CreateAccount(account).Error; err != nil {
+	if err := h.accountService.CreateAccount(account).Error; err != nil {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 
@@ -110,7 +109,7 @@ func (h *Handler) Refresh(c *fiber.Ctx) error {
 	}
 
 	account := &model.Account{}
-	if err := database.DB.Model(account).Take(account, &model.Account{
+	if err := h.db.Model(account).Take(account, &model.Account{
 		BaseModel:   model.BaseModel{ID: tokenPayload.AccountID},
 		TokenSecret: tokenPayload.Secret,
 	}).Error; err != nil {

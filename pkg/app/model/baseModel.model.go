@@ -4,7 +4,6 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/pkg/app/types/pagination"
 	"github.com/TKSpectro/go-todo-api/utils"
 	"gorm.io/gorm"
@@ -16,10 +15,10 @@ type BaseModel struct {
 	UpdatedAt time.Time `gorm:"autoUpdateTime:milli" json:"updatedAt"`
 }
 
-func FindWithMeta(dest interface{}, model interface{}, meta *pagination.Meta, where *gorm.DB) *gorm.DB {
+func FindWithMeta(db *gorm.DB, dest interface{}, model interface{}, meta *pagination.Meta, where *gorm.DB) *gorm.DB {
 	search, searchArgs := searchWhere(meta.Search, model)
 
-	query := database.DB.Model(model).Where(search, searchArgs...)
+	query := db.Model(model).Where(search, searchArgs...)
 
 	if where != nil {
 		query = query.Where(where)

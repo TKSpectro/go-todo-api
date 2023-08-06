@@ -2,22 +2,21 @@ package app
 
 import (
 	_ "github.com/TKSpectro/go-todo-api/api"
-	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/pkg/app/handler"
-	"github.com/TKSpectro/go-todo-api/pkg/app/model"
 	"github.com/TKSpectro/go-todo-api/pkg/app/service"
+	"github.com/TKSpectro/go-todo-api/pkg/database"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
+	"gorm.io/gorm"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-func New() *fiber.App {
-	database.Connect()
-	database.Migrate(&model.Account{}, &model.Todo{})
-
+func New(db *gorm.DB) *fiber.App {
 	jwt.Init()
+
+	database.AutoMigrate(db)
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: ErrorHandler,
@@ -28,10 +27,10 @@ func New() *fiber.App {
 	// Recover from panics anywhere in the chain and handle the control to the centralized ErrorHandler
 	app.Use(recover.New())
 
-	as := service.NewAccountService(database.DB)
-	ts := service.NewTodoService(database.DB)
+	as := service.NewAccountService(db)
+	ts := service.NewTodoService(db)
 
-	h := handler.NewHandler(as, ts)
+	h := handler.NewHandler(db, as, ts)
 
 	h.RegisterRoutes(app)
 
@@ -39,7 +38,5 @@ func New() *fiber.App {
 }
 
 func Shutdown(app *fiber.App) {
-	database.Disconnect()
-
 	app.Shutdown()
 }

@@ -32,7 +32,7 @@ type ITodoService interface {
 
 // TODO: Maybe cleanup the base model call
 func (ts *TodoService) FindTodosByAccount(dest interface{}, meta *pagination.Meta, accountID uint) *gorm.DB {
-	return model.FindWithMeta(dest, &model.Todo{}, meta, ts.db.Where("account_id = ?", accountID))
+	return model.FindWithMeta(ts.db, dest, &model.Todo{}, meta, ts.db.Where("account_id = ?", accountID))
 }
 
 func (ts *TodoService) FindTodoByID(dest interface{}, id string, accountID uint) *gorm.DB {

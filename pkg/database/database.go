@@ -6,15 +6,13 @@ import (
 	"time"
 
 	"github.com/TKSpectro/go-todo-api/config"
+	"github.com/TKSpectro/go-todo-api/pkg/app/model"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-// DB gorm connector
-var DB *gorm.DB
-
-func Connect() {
+func Connect() *gorm.DB {
 	dsn := fmt.Sprintf("%v:%v@tcp(127.0.0.1:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", config.DB_USER, config.DB_ROOT_PASSWORD, config.DB_PORT, config.DB_NAME)
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
@@ -26,15 +24,15 @@ func Connect() {
 		panic(err)
 	}
 
-	DB = db
+	return db
 }
 
-func Migrate(tables ...interface{}) error {
-	return DB.AutoMigrate(tables...)
+func AutoMigrate(db *gorm.DB) error {
+	return db.AutoMigrate(&model.Account{}, &model.Todo{})
 }
 
-func Disconnect() {
-	sqlDB, err := DB.DB()
+func Disconnect(db *gorm.DB) {
+	sqlDB, err := db.DB()
 	if err != nil {
 		log.Println("[DATABASE]::DISCONNECTION_ERROR")
 		panic(err)

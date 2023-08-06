@@ -25,11 +25,13 @@ type IAccountService interface {
 	FindAccount(dest interface{}, conditions ...interface{}) *gorm.DB
 	FindAccountByID(dest interface{}, id uint) *gorm.DB
 	FindAccountByEmail(dest interface{}, email string) *gorm.DB
+
+	CreateAccount(account *model.Account) *gorm.DB
 }
 
 // TODO: Maybe cleanup the base model call
 func (as *AccountService) FindAccounts(dest interface{}, meta *pagination.Meta) *gorm.DB {
-	return model.FindWithMeta(dest, &model.Account{}, meta, nil)
+	return model.FindWithMeta(as.db, dest, &model.Account{}, meta, nil)
 }
 
 func (as *AccountService) FindAccountsWithTodos(dest interface{}, conditions ...interface{}) *gorm.DB {
@@ -51,4 +53,8 @@ func (as *AccountService) FindAccountByID(dest interface{}, id uint) *gorm.DB {
 
 func (as *AccountService) FindAccountByEmail(dest interface{}, email string) *gorm.DB {
 	return as.FindAccount(dest, "email = ?", email)
+}
+
+func (as *AccountService) CreateAccount(account *model.Account) *gorm.DB {
+	return as.db.Model(&model.Account{}).Create(account)
 }
