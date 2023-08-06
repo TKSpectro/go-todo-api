@@ -2,8 +2,8 @@ package app
 
 import (
 	_ "github.com/TKSpectro/go-todo-api/api"
+	"github.com/TKSpectro/go-todo-api/app/handler"
 	"github.com/TKSpectro/go-todo-api/app/model"
-	"github.com/TKSpectro/go-todo-api/app/routes"
 	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
 	"github.com/TKSpectro/go-todo-api/utils"
@@ -30,7 +30,7 @@ func New() *fiber.App {
 	// Recover from panics anywhere in the chain and handle the control to the centralized ErrorHandler
 	app.Use(recover.New())
 
-	routes.New(app)
+	handler.New(app)
 
 	return app
 }
