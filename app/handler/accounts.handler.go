@@ -1,9 +1,9 @@
-package handlers
+package handler
 
 import (
 	"errors"
 
-	"github.com/TKSpectro/go-todo-api/app/models"
+	"github.com/TKSpectro/go-todo-api/app/model"
 	"github.com/TKSpectro/go-todo-api/app/types"
 	"github.com/TKSpectro/go-todo-api/core"
 	"github.com/TKSpectro/go-todo-api/pkg/middleware/locals"
@@ -18,13 +18,13 @@ import (
 // @Accept       json
 // @Param		 meta query pagination.QueryParams false "Pagination Query Parameters"
 // @Produce      json
-// @Success      200  {array}  models.Account
+// @Success      200  {array}  model.Account
 // @Router       /accounts [get]
 func GetAccounts(c *fiber.Ctx) error {
-	var accounts = &[]models.Account{}
+	var accounts = &[]model.Account{}
 	var meta = locals.Meta(c)
 
-	err := models.FindAccounts(accounts, meta).Error
+	err := model.FindAccounts(accounts, meta).Error
 	if err != nil {
 		return &core.INTERNAL_SERVER_ERROR
 	}
@@ -42,17 +42,17 @@ func GetAccounts(c *fiber.Ctx) error {
 // @Accept       json
 // @Produce      json
 // @Param        id   path      int  true  "Account ID"
-// @Success      200  {object}  models.Account
+// @Success      200  {object}  model.Account
 // @Router       /accounts/{id} [get]
 func GetAccount(c *fiber.Ctx) error {
-	var account = &models.Account{}
+	var account = &model.Account{}
 
 	remoteId := c.Params("id")
 	if remoteId == "" {
 		return &core.BAD_REQUEST
 	}
 
-	err := models.FindAccountByID(account, remoteId).Error
+	err := model.FindAccountByID(account, remoteId).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &core.NOT_FOUND

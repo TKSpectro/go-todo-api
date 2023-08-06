@@ -62,7 +62,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Account"
+                                "$ref": "#/definitions/model.Account"
                             }
                         }
                     }
@@ -95,7 +95,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Account"
+                            "$ref": "#/definitions/model.Account"
                         }
                     }
                 }
@@ -380,7 +380,7 @@
         }
     },
     "definitions": {
-        "models.Account": {
+        "model.Account": {
             "type": "object",
             "required": [
                 "email"
@@ -404,7 +404,7 @@
                 "todos": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Todo"
+                        "$ref": "#/definitions/model.Todo"
                     }
                 },
                 "updatedAt": {
@@ -412,7 +412,7 @@
                 }
             }
         },
-        "models.Todo": {
+        "model.Todo": {
             "type": "object",
             "required": [
                 "title"
@@ -504,7 +504,7 @@
             "type": "object",
             "properties": {
                 "todo": {
-                    "$ref": "#/definitions/models.Todo"
+                    "$ref": "#/definitions/model.Todo"
                 }
             }
         },
@@ -512,7 +512,7 @@
             "type": "object",
             "properties": {
                 "todo": {
-                    "$ref": "#/definitions/models.Todo"
+                    "$ref": "#/definitions/model.Todo"
                 }
             }
         },
@@ -520,7 +520,7 @@
             "type": "object",
             "properties": {
                 "todo": {
-                    "$ref": "#/definitions/models.Todo"
+                    "$ref": "#/definitions/model.Todo"
                 }
             }
         },
@@ -533,7 +533,7 @@
                 "todos": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Todo"
+                        "$ref": "#/definitions/model.Todo"
                     }
                 }
             }
@@ -600,7 +600,7 @@
             "type": "object",
             "properties": {
                 "todo": {
-                    "$ref": "#/definitions/models.Todo"
+                    "$ref": "#/definitions/model.Todo"
                 }
             }
         },
@@ -608,7 +608,7 @@
             "type": "object",
             "properties": {
                 "todo": {
-                    "$ref": "#/definitions/models.Todo"
+                    "$ref": "#/definitions/model.Todo"
                 }
             }
         }

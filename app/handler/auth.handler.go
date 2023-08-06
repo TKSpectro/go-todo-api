@@ -1,9 +1,9 @@
-package handlers
+package handler
 
 import (
 	"errors"
 
-	"github.com/TKSpectro/go-todo-api/app/models"
+	"github.com/TKSpectro/go-todo-api/app/model"
 	"github.com/TKSpectro/go-todo-api/app/types"
 	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/core"
@@ -29,23 +29,23 @@ func Register(c *fiber.Ctx) error {
 		return err
 	}
 
-	err := models.FindAccountByEmail(struct{}{}, remoteData.Account.Email).Error
+	err := model.FindAccountByEmail(struct{}{}, remoteData.Account.Email).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return &core.ACCOUNT_WITH_EMAIL_ALREADY_EXISTS
 	}
 
-	account := &models.Account{}
+	account := &model.Account{}
 	// Convert remoteData.Account from RegisterDTOBody to Account type
-	account.WriteRemote(utils.Convert(models.Account{}, &remoteData.Account))
+	account.WriteRemote(utils.Convert(model.Account{}, &remoteData.Account))
 
-	account.TokenSecret = models.GenerateSecretToken()
-	hashedPassword, err := models.HashPassword(remoteData.Account.Password)
+	account.TokenSecret = model.GenerateSecretToken()
+	hashedPassword, err := model.HashPassword(remoteData.Account.Password)
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 	account.Password = hashedPassword
 
-	if err := models.CreateAccount(account).Error; err != nil {
+	if err := model.CreateAccount(account).Error; err != nil {
 		return &core.INTERNAL_SERVER_ERROR
 	}
 
@@ -74,15 +74,15 @@ func Login(c *fiber.Ctx) error {
 		return err
 	}
 
-	account := &models.Account{}
-	if err := models.FindAccountByEmail(account, remoteData.Account.Email).Error; err != nil {
+	account := &model.Account{}
+	if err := model.FindAccountByEmail(account, remoteData.Account.Email).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &core.NOT_FOUND
 		}
 		return err
 	}
 
-	if !models.CheckPasswordHash(remoteData.Account.Password, account.Password) {
+	if !model.CheckPasswordHash(remoteData.Account.Password, account.Password) {
 		return &core.AUTH_LOGIN_WRONG_PASSWORD
 	}
 
@@ -110,9 +110,9 @@ func Refresh(c *fiber.Ctx) error {
 		return &core.WRONG_REFRESH_TOKEN
 	}
 
-	account := &models.Account{}
-	if err := database.DB.Model(account).Take(account, &models.Account{
-		BaseModel:   models.BaseModel{ID: tokenPayload.AccountID},
+	account := &model.Account{}
+	if err := database.DB.Model(account).Take(account, &model.Account{
+		BaseModel:   model.BaseModel{ID: tokenPayload.AccountID},
 		TokenSecret: tokenPayload.Secret,
 	}).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -138,9 +138,9 @@ func RotateJWK(c *fiber.Ctx) error {
 }
 
 func Me(c *fiber.Ctx) error {
-	var account = &models.Account{}
+	var account = &model.Account{}
 
-	err := models.FindAccountByID(account, locals.JwtPayload(c).AccountID).Error
+	err := model.FindAccountByID(account, locals.JwtPayload(c).AccountID).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &core.NOT_FOUND

@@ -6,11 +6,11 @@ import (
 	"os"
 
 	"ariga.io/atlas-provider-gorm/gormschema"
-	"github.com/TKSpectro/go-todo-api/app/models"
+	"github.com/TKSpectro/go-todo-api/app/model"
 )
 
 func main() {
-	stmts, err := gormschema.New("mysql").Load(&models.Account{}, &models.Todo{})
+	stmts, err := gormschema.New("mysql").Load(&model.Account{}, &model.Todo{})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to load gorm schema: %v\n", err)
 		os.Exit(1)

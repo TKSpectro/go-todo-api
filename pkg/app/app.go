@@ -2,7 +2,7 @@ package app
 
 import (
 	_ "github.com/TKSpectro/go-todo-api/api"
-	"github.com/TKSpectro/go-todo-api/app/models"
+	"github.com/TKSpectro/go-todo-api/app/model"
 	"github.com/TKSpectro/go-todo-api/app/routes"
 	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
@@ -15,7 +15,7 @@ import (
 
 func New() *fiber.App {
 	database.Connect()
-	database.Migrate(&models.Account{}, &models.Todo{})
+	database.Migrate(&model.Account{}, &model.Todo{})
 
 	jwt.Init()
 

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/TKSpectro/go-todo-api/app/models"
+	"github.com/TKSpectro/go-todo-api/app/model"
 	"github.com/TKSpectro/go-todo-api/app/types"
 	"github.com/TKSpectro/go-todo-api/config"
 	"github.com/TKSpectro/go-todo-api/core"
@@ -44,7 +44,7 @@ func Init() {
 }
 
 // Generate generates both a token and a refresh token
-func Generate(account *models.Account) (types.AuthResponseBody, error) {
+func Generate(account *model.Account) (types.AuthResponseBody, error) {
 	token, err := jwt.NewBuilder().
 		Issuer(`github.com/TKSpectro/go-todo-api`).
 		IssuedAt(time.Now()).

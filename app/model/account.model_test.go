@@ -1,7 +1,7 @@
-package models_test
+package model_test
 
 import (
-	"github.com/TKSpectro/go-todo-api/app/models"
+	"github.com/TKSpectro/go-todo-api/app/model"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -9,8 +9,8 @@ import (
 var _ = Describe("Account.Model", func() {
 	Describe("WriteRemote", func() {
 		It("empty", func() {
-			account := models.Account{}
-			account.WriteRemote(models.Account{})
+			account := model.Account{}
+			account.WriteRemote(model.Account{})
 
 			Expect(account.Email).To(Equal(""))
 			Expect(account.Password).To(Equal(""))
@@ -20,8 +20,8 @@ var _ = Describe("Account.Model", func() {
 		})
 
 		It("with data", func() {
-			account := models.Account{}
-			account.WriteRemote(models.Account{
+			account := model.Account{}
+			account.WriteRemote(model.Account{
 				Email:       "test@turbomeet.xyz",
 				Password:    "password",
 				Firstname:   "Firstname",

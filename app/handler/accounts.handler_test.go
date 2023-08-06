@@ -1,11 +1,11 @@
-package handlers_test
+package handler_test
 
 import (
 	"encoding/json"
 	"io"
 	"net/http"
 
-	"github.com/TKSpectro/go-todo-api/app/models"
+	"github.com/TKSpectro/go-todo-api/app/model"
 	"github.com/TKSpectro/go-todo-api/app/types"
 	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
@@ -15,18 +15,18 @@ import (
 	. "github.com/onsi/gomega/gstruct"
 )
 
-var _ = Describe("Accounts.Handlers", Ordered, func() {
+var _ = Describe("Accounts.Handler", Ordered, func() {
 	Describe("List", Ordered, func() {
 		var authToken string
 		BeforeAll(func() {
-			pw, _ := models.HashPassword("123456")
-			account := models.Account{
+			pw, _ := model.HashPassword("123456")
+			account := model.Account{
 				Email:     "accounts.list@turbomeet.xyz",
 				Password:  pw,
 				Firstname: "Accounts",
 				Lastname:  "List",
 			}
-			models.CreateAccount(&account)
+			model.CreateAccount(&account)
 
 			auth, _ := jwt.Generate(&account)
 			authToken = auth.Token

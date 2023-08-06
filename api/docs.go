@@ -71,7 +71,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Account"
+                                "$ref": "#/definitions/model.Account"
                             }
                         }
                     }
@@ -104,7 +104,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Account"
+                            "$ref": "#/definitions/model.Account"
                         }
                     }
                 }
@@ -389,7 +389,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.Account": {
+        "model.Account": {
             "type": "object",
             "required": [
                 "email"
@@ -413,7 +413,7 @@ const docTemplate = `{
                 "todos": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Todo"
+                        "$ref": "#/definitions/model.Todo"
                     }
                 },
                 "updatedAt": {
@@ -421,7 +421,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Todo": {
+        "model.Todo": {
             "type": "object",
             "required": [
                 "title"
@@ -513,7 +513,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "todo": {
-                    "$ref": "#/definitions/models.Todo"
+                    "$ref": "#/definitions/model.Todo"
                 }
             }
         },
@@ -521,7 +521,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "todo": {
-                    "$ref": "#/definitions/models.Todo"
+                    "$ref": "#/definitions/model.Todo"
                 }
             }
         },
@@ -529,7 +529,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "todo": {
-                    "$ref": "#/definitions/models.Todo"
+                    "$ref": "#/definitions/model.Todo"
                 }
             }
         },
@@ -542,7 +542,7 @@ const docTemplate = `{
                 "todos": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Todo"
+                        "$ref": "#/definitions/model.Todo"
                     }
                 }
             }
@@ -609,7 +609,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "todo": {
-                    "$ref": "#/definitions/models.Todo"
+                    "$ref": "#/definitions/model.Todo"
                 }
             }
         },
@@ -617,7 +617,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "todo": {
-                    "$ref": "#/definitions/models.Todo"
+                    "$ref": "#/definitions/model.Todo"
                 }
             }
         }

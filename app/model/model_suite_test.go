@@ -1,4 +1,4 @@
-package handlers_test
+package model_test
 
 import (
 	"testing"
@@ -10,21 +10,21 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestHandlers(t *testing.T) {
+func TestModel(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Handlers Suite")
+	RunSpecs(t, "Model Suite")
 }
 
-var App *fiber.App
+var testApp *fiber.App
 
 var _ = BeforeSuite(func() {
 	test.New()
 
-	App = app.New()
+	testApp = app.New()
 })
 
 var _ = AfterSuite(func() {
 	test.ClearAllTables()
 
-	app.Shutdown(App)
+	app.Shutdown(testApp)
 })

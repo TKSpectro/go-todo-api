@@ -1,4 +1,4 @@
-package models
+package model
 
 import (
 	"github.com/TKSpectro/go-todo-api/app/types/pagination"

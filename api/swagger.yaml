@@ -1,6 +1,6 @@
 basePath: /api
 definitions:
-  models.Account:
+  model.Account:
     properties:
       createdAt:
         type: string
@@ -14,14 +14,14 @@ definitions:
         type: string
       todos:
         items:
-          $ref: '#/definitions/models.Todo'
+          $ref: '#/definitions/model.Todo'
         type: array
       updatedAt:
         type: string
     required:
     - email
     type: object
-  models.Todo:
+  model.Todo:
     properties:
       completed:
         type: boolean
@@ -82,17 +82,17 @@ definitions:
   types.CreateTodoRequest:
     properties:
       todo:
-        $ref: '#/definitions/models.Todo'
+        $ref: '#/definitions/model.Todo'
     type: object
   types.CreateTodoResponse:
     properties:
       todo:
-        $ref: '#/definitions/models.Todo'
+        $ref: '#/definitions/model.Todo'
     type: object
   types.GetTodoResponse:
     properties:
       todo:
-        $ref: '#/definitions/models.Todo'
+        $ref: '#/definitions/model.Todo'
     type: object
   types.GetTodosResponse:
     properties:
@@ -100,7 +100,7 @@ definitions:
         $ref: '#/definitions/pagination.Meta'
       todos:
         items:
-          $ref: '#/definitions/models.Todo'
+          $ref: '#/definitions/model.Todo'
         type: array
     type: object
   types.LoginDTO:
@@ -146,12 +146,12 @@ definitions:
   types.UpdateTodoRequest:
     properties:
       todo:
-        $ref: '#/definitions/models.Todo'
+        $ref: '#/definitions/model.Todo'
     type: object
   types.UpdateTodoResponse:
     properties:
       todo:
-        $ref: '#/definitions/models.Todo'
+        $ref: '#/definitions/model.Todo'
     type: object
 info:
   contact: {}
@@ -195,7 +195,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Account'
+              $ref: '#/definitions/model.Account'
             type: array
       summary: List accounts
       tags:
@@ -217,7 +217,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Account'
+            $ref: '#/definitions/model.Account'
       summary: Get account
       tags:
       - accounts

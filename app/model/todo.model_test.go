@@ -1,9 +1,9 @@
-package models_test
+package model_test
 
 import (
 	"time"
 
-	"github.com/TKSpectro/go-todo-api/app/models"
+	"github.com/TKSpectro/go-todo-api/app/model"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"gopkg.in/guregu/null.v4"
@@ -13,8 +13,8 @@ import (
 var _ = Describe("Todo.Model", func() {
 	Describe("WriteRemote", func() {
 		It("empty", func() {
-			todo := models.Todo{}
-			todo.WriteRemote(models.Todo{})
+			todo := model.Todo{}
+			todo.WriteRemote(model.Todo{})
 
 			Expect(todo.Title).To(Equal(zero.NewString("", false)))
 			Expect(todo.Description).To(Equal(zero.NewString("", false)))
@@ -25,8 +25,8 @@ var _ = Describe("Todo.Model", func() {
 		It("with data", func() {
 			time := time.Now()
 
-			todo := models.Todo{}
-			todo.WriteRemote(models.Todo{
+			todo := model.Todo{}
+			todo.WriteRemote(model.Todo{
 				Title:       zero.NewString("Title", true),
 				Description: zero.NewString("Description", true),
 				Completed:   true,
