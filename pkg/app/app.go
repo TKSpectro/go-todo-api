@@ -4,7 +4,6 @@ import (
 	_ "github.com/TKSpectro/go-todo-api/api"
 	"github.com/TKSpectro/go-todo-api/pkg/app/handler"
 	"github.com/TKSpectro/go-todo-api/pkg/app/service"
-	"github.com/TKSpectro/go-todo-api/pkg/database"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
 	"gorm.io/gorm"
 
@@ -15,8 +14,6 @@ import (
 
 func New(db *gorm.DB) *fiber.App {
 	jwt.Init()
-
-	database.AutoMigrate(db)
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: ErrorHandler,

@@ -4,76 +4,61 @@ import (
 	"fmt"
 
 	"github.com/TKSpectro/go-todo-api/config"
+	"github.com/TKSpectro/go-todo-api/pkg/database"
 	"github.com/onsi/ginkgo/v2"
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-var (
-	DB_SERVER_DSN = fmt.Sprintf("%v:%v@tcp(127.0.0.1:%v)/%s", config.DB_USER, config.DB_ROOT_PASSWORD, config.DB_PORT, "")
-	DB_DSN        = fmt.Sprintf("%v:%v@tcp(127.0.0.1:%v)/%s", config.DB_USER, config.DB_ROOT_PASSWORD, config.DB_PORT, config.DB_NAME)
-)
-
-func New() {
+func Setup() *gorm.DB {
 	ginkgo.GinkgoHelper()
 
 	if !config.IS_TEST {
 		panic("[New]::IS_TEST is not true")
 	}
-	if config.DB_NAME != "go_api_test" {
-		panic("[New]::Database name is not go_api_test")
+	if config.ROOT_PATH == "" {
+		panic("[New]::ROOT_PATH is empty. Please set the environment variable GTA_ROOT_PATH to the root path of the project (See makefile:test)")
 	}
 
-	db := db(DB_SERVER_DSN)
-	// sqlDB, _ := db.DB()
-	// defer sqlDB.Close()
+	dbServer := database.ConnectToServer()
 
-	db.Exec("DROP DATABASE IF EXISTS " + config.DB_NAME)
-	db.Exec("CREATE DATABASE IF NOT EXISTS " + config.DB_NAME)
+	dbServer.Exec("DROP DATABASE IF EXISTS " + config.TEST_DB_NAME)
+	dbServer.Exec("CREATE DATABASE IF NOT EXISTS " + config.TEST_DB_NAME)
 
-	// TODO: Add atlas migration run here and remove auto migration on app start
+	sqlDB, _ := dbServer.DB()
+	defer sqlDB.Close()
+
+	db := database.ConnectToTest()
+
+	database.AutoMigrate(db)
+
+	return db
 }
 
-func ClearTables(tables []string) {
+func Teardown(db *gorm.DB) {
 	ginkgo.GinkgoHelper()
 
-	db := db("")
+	db.Exec("DROP DATABASE IF EXISTS " + config.TEST_DB_NAME)
+
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()
+}
+
+func ClearTables(db *gorm.DB, tables []string) {
+	ginkgo.GinkgoHelper()
 
 	clearTables(tables, db)
 }
 
-func ClearAllTables() {
+func ClearAllTables(db *gorm.DB) {
 	ginkgo.GinkgoHelper()
 
-	db := db("")
-	sqlDB, _ := db.DB()
-	defer sqlDB.Close()
-
 	var tables []string
-	if err := db.Table("information_schema.tables").Select("table_name").Where("table_schema = ?", config.DB_NAME).Find(&tables).Error; err != nil {
+	if err := db.Table("information_schema.tables").Select("table_name").Where("table_schema = ?", config.TEST_DB_NAME).Find(&tables).Error; err != nil {
 		fmt.Println("[ClearAllTables]::ERROR GETTING TABLES")
 		panic(err)
 	}
 
 	clearTables(tables, db)
-}
-
-func db(dsn string) *gorm.DB {
-	ginkgo.GinkgoHelper()
-
-	if dsn == "" {
-		dsn = DB_DSN
-	}
-
-	db, err := gorm.Open(mysql.Open(dsn))
-	if err != nil {
-		fmt.Println("[db]::CONNECTION_ERROR")
-		panic(err)
-	}
-
-	return db
 }
 
 func clearTables(tables []string, db *gorm.DB) {

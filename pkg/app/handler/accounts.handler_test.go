@@ -62,11 +62,11 @@ var _ = Describe("Accounts.Handler", Ordered, func() {
 		})
 
 		AfterAll(func() {
-			test.ClearTables([]string{"accounts"})
+			test.ClearTables(DB, []string{"accounts"})
 		})
 	})
 
 	AfterAll(func() {
-		test.ClearAllTables()
+		test.ClearAllTables(DB)
 	})
 })
