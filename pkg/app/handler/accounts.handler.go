@@ -4,10 +4,10 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/TKSpectro/go-todo-api/core"
 	"github.com/TKSpectro/go-todo-api/pkg/app/model"
 	"github.com/TKSpectro/go-todo-api/pkg/app/types"
 	"github.com/TKSpectro/go-todo-api/pkg/middleware/locals"
+	"github.com/TKSpectro/go-todo-api/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -27,7 +27,7 @@ func (h *Handler) GetAccounts(c *fiber.Ctx) error {
 
 	err := h.accountService.FindAccounts(accounts, meta).Error
 	if err != nil {
-		return &core.INTERNAL_SERVER_ERROR
+		return &utils.INTERNAL_SERVER_ERROR
 	}
 
 	return c.JSON(&types.GetAccountsResponse{
@@ -50,20 +50,20 @@ func (h *Handler) GetAccount(c *fiber.Ctx) error {
 
 	remoteIdString := c.Params("id")
 	if remoteIdString == "" {
-		return &core.BAD_REQUEST
+		return &utils.BAD_REQUEST
 	}
 
 	remoteId, err := strconv.ParseUint(remoteIdString, 10, 32)
 	if err != nil {
-		return &core.BAD_REQUEST
+		return &utils.BAD_REQUEST
 	}
 
 	err = h.accountService.FindAccountByID(account, uint(remoteId)).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return &core.NOT_FOUND
+			return &utils.NOT_FOUND
 		}
-		return &core.INTERNAL_SERVER_ERROR
+		return &utils.INTERNAL_SERVER_ERROR
 	}
 
 	return c.JSON(&types.GetAccountResponse{

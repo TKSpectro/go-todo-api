@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	_ "github.com/TKSpectro/go-todo-api/api"
-	"github.com/TKSpectro/go-todo-api/core"
+	"github.com/TKSpectro/go-todo-api/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -23,7 +23,7 @@ var ErrorHandler = func(c *fiber.Ctx, err error) error {
 	}
 
 	// Check if its our custom request error
-	var requestError *core.RequestError
+	var requestError *utils.RequestError
 	if errors.As(err, &requestError) {
 		statusCode = requestError.StatusCode
 		code = requestError.Code

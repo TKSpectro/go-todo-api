@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/TKSpectro/go-todo-api/config"
-	"github.com/TKSpectro/go-todo-api/core"
 	"github.com/TKSpectro/go-todo-api/pkg/app/model"
 	"github.com/TKSpectro/go-todo-api/pkg/app/types"
 	"github.com/TKSpectro/go-todo-api/pkg/jwk"
+	"github.com/TKSpectro/go-todo-api/utils"
 	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwt"
 )
@@ -54,7 +54,7 @@ func Generate(account *model.Account) (types.AuthResponseBody, error) {
 		Claim(CLAIM_SECRET, account.TokenSecret).
 		Build()
 	if err != nil {
-		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
+		return types.AuthResponseBody{}, utils.RequestErrorFrom(&utils.TOKEN_GENERATION_ERROR, err.Error())
 	}
 
 	refreshToken, err := jwt.NewBuilder().
@@ -66,23 +66,23 @@ func Generate(account *model.Account) (types.AuthResponseBody, error) {
 		Claim(CLAIM_SECRET, account.TokenSecret).
 		Build()
 	if err != nil {
-		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
+		return types.AuthResponseBody{}, utils.RequestErrorFrom(&utils.TOKEN_GENERATION_ERROR, err.Error())
 	}
 
 	// Get the last key in the set
 	jwkKey, ok := JWKS.PRV_SET.Key(JWKS.PRV_SET.Len() - 1)
 	if !ok {
-		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, "failed to get last key in set")
+		return types.AuthResponseBody{}, utils.RequestErrorFrom(&utils.TOKEN_GENERATION_ERROR, "failed to get last key in set")
 	}
 
 	signed, err := jwt.Sign(token, jwt.WithKey(jwa.ES256K, jwkKey))
 	if err != nil {
-		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
+		return types.AuthResponseBody{}, utils.RequestErrorFrom(&utils.TOKEN_GENERATION_ERROR, err.Error())
 	}
 
 	signedRefresh, err := jwt.Sign(refreshToken, jwt.WithKey(jwa.ES256K, jwkKey))
 	if err != nil {
-		return types.AuthResponseBody{}, core.RequestErrorFrom(&core.TOKEN_GENERATION_ERROR, err.Error())
+		return types.AuthResponseBody{}, utils.RequestErrorFrom(&utils.TOKEN_GENERATION_ERROR, err.Error())
 	}
 
 	return types.AuthResponseBody{

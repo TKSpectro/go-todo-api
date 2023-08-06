@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/TKSpectro/go-todo-api/config"
-	"github.com/TKSpectro/go-todo-api/core"
+	"github.com/TKSpectro/go-todo-api/utils"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -16,7 +16,7 @@ func AllowedIps(c *fiber.Ctx) error {
 	ip := c.IP()
 
 	if !isAllowed(ip) {
-		return &core.FORBIDDEN
+		return &utils.FORBIDDEN
 	}
 
 	return c.Next()

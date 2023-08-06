@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/TKSpectro/go-todo-api/config/database"
-	"github.com/TKSpectro/go-todo-api/core"
 	"github.com/TKSpectro/go-todo-api/pkg/app/model"
 	"github.com/TKSpectro/go-todo-api/pkg/app/types"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
@@ -31,7 +30,7 @@ func (h *Handler) Register(c *fiber.Ctx) error {
 
 	err := h.accountService.FindAccountByEmail(struct{}{}, remoteData.Account.Email).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
-		return &core.ACCOUNT_WITH_EMAIL_ALREADY_EXISTS
+		return &utils.ACCOUNT_WITH_EMAIL_ALREADY_EXISTS
 	}
 
 	account := &model.Account{}
@@ -46,7 +45,7 @@ func (h *Handler) Register(c *fiber.Ctx) error {
 	account.Password = hashedPassword
 
 	if err := model.CreateAccount(account).Error; err != nil {
-		return &core.INTERNAL_SERVER_ERROR
+		return &utils.INTERNAL_SERVER_ERROR
 	}
 
 	auth, err := jwt.Generate(account)
@@ -77,13 +76,13 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 	account := &model.Account{}
 	if err := h.accountService.FindAccountByEmail(account, remoteData.Account.Email).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return &core.NOT_FOUND
+			return &utils.NOT_FOUND
 		}
 		return err
 	}
 
 	if !model.CheckPasswordHash(remoteData.Account.Password, account.Password) {
-		return &core.AUTH_LOGIN_WRONG_PASSWORD
+		return &utils.AUTH_LOGIN_WRONG_PASSWORD
 	}
 
 	auth, err := jwt.Generate(account)
@@ -107,7 +106,7 @@ func (h *Handler) Refresh(c *fiber.Ctx) error {
 	var tokenPayload = locals.JwtPayload(c)
 
 	if tokenPayload.Type != "refresh" {
-		return &core.WRONG_REFRESH_TOKEN
+		return &utils.WRONG_REFRESH_TOKEN
 	}
 
 	account := &model.Account{}
@@ -116,7 +115,7 @@ func (h *Handler) Refresh(c *fiber.Ctx) error {
 		TokenSecret: tokenPayload.Secret,
 	}).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return &core.UNAUTHORIZED
+			return &utils.UNAUTHORIZED
 		}
 		return err
 	}
@@ -143,9 +142,9 @@ func (h *Handler) Me(c *fiber.Ctx) error {
 	err := h.accountService.FindAccountByID(account, locals.JwtPayload(c).AccountID).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return &core.NOT_FOUND
+			return &utils.NOT_FOUND
 		}
-		return &core.INTERNAL_SERVER_ERROR
+		return &utils.INTERNAL_SERVER_ERROR
 	}
 
 	return c.JSON(&types.GetAccountResponse{

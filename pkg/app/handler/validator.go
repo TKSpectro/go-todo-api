@@ -5,11 +5,10 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/TKSpectro/go-todo-api/core"
-
 	"gopkg.in/guregu/null.v4"
 	"gopkg.in/guregu/null.v4/zero"
 
+	"github.com/TKSpectro/go-todo-api/utils"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -27,7 +26,7 @@ func NewValidator() *Validator {
 	return v
 }
 
-func (v *Validator) Validate(payload interface{}) *core.RequestError {
+func (v *Validator) Validate(payload interface{}) *utils.RequestError {
 	if err := v.validator.Struct(payload); err != nil {
 		var errors []string
 
@@ -38,9 +37,9 @@ func (v *Validator) Validate(payload interface{}) *core.RequestError {
 			)
 		}
 
-		return &core.RequestError{
-			Code:       core.VALIDATION_ERROR.Code,
-			StatusCode: core.VALIDATION_ERROR.StatusCode,
+		return &utils.RequestError{
+			Code:       utils.VALIDATION_ERROR.Code,
+			StatusCode: utils.VALIDATION_ERROR.StatusCode,
 			Message:    strings.Join(errors, ","),
 		}
 	}
