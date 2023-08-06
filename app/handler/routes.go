@@ -6,10 +6,8 @@ import (
 	"github.com/gofiber/swagger"
 )
 
-// TODO: Rename New to Register (Need to rewrite handler building first)
-
 // New registers all routes for the application
-func New(app *fiber.App) {
+func (h *Handler) RegisterRoutes(app *fiber.App) {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello from root")
 	})
@@ -23,23 +21,23 @@ func New(app *fiber.App) {
 	api.Get("/docs/*", swagger.HandlerDefault)
 
 	auth := api.Group("/auth")
-	auth.Put("/login", Login)
-	auth.Post("/register", Register)
-	auth.Put("/refresh", middleware.Protected, Refresh)
-	auth.Get("/me", middleware.Protected, Me)
+	auth.Put("/login", h.Login)
+	auth.Post("/register", h.Register)
+	auth.Put("/refresh", middleware.Protected, h.Refresh)
+	auth.Get("/me", middleware.Protected, h.Me)
 
-	auth.Put("/jwk-rotate", middleware.AllowedIps, RotateJWK)
+	auth.Put("/jwk-rotate", middleware.AllowedIps, h.RotateJWK)
 
 	accounts := api.Group("/accounts")
-	accounts.Get("/", middleware.Protected, middleware.Pagination, GetAccounts)
-	accounts.Get("/:id", middleware.Protected, GetAccount)
+	accounts.Get("/", middleware.Protected, middleware.Pagination, h.GetAccounts)
+	accounts.Get("/:id", middleware.Protected, h.GetAccount)
 
 	todos := api.Group("/todos")
-	todos.Get("/", middleware.Protected, middleware.Pagination, GetTodos)
-	todos.Get("/:id", middleware.Protected, GetTodo)
-	todos.Post("/", middleware.Protected, CreateTodo)
-	todos.Put("/:id", middleware.Protected, UpdateTodo)
-	todos.Delete("/:id", middleware.Protected, DeleteTodo)
+	todos.Get("/", middleware.Protected, middleware.Pagination, h.GetTodos)
+	todos.Get("/:id", middleware.Protected, h.GetTodo)
+	todos.Post("/", middleware.Protected, h.CreateTodo)
+	todos.Put("/:id", middleware.Protected, h.UpdateTodo)
+	todos.Delete("/:id", middleware.Protected, h.DeleteTodo)
 
-	todos.Post("/random", middleware.Protected, CreateRandomTodo)
+	todos.Post("/random", middleware.Protected, h.CreateRandomTodo)
 }

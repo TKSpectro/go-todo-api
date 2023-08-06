@@ -1,4 +1,4 @@
-package utils
+package handler
 
 import (
 	"github.com/TKSpectro/go-todo-api/core"
@@ -14,10 +14,10 @@ func ParseBody(c *fiber.Ctx, body interface{}) *core.RequestError {
 	return nil
 }
 
-func ParseBodyAndValidate(c *fiber.Ctx, body interface{}) *core.RequestError {
+func ParseBodyAndValidate(c *fiber.Ctx, body interface{}, v Validator) *core.RequestError {
 	if err := ParseBody(c, body); err != nil {
 		return err
 	}
 
-	return Validate(body)
+	return v.Validate(body)
 }

@@ -1,4 +1,4 @@
-package utils
+package handler
 
 import (
 	"fmt"
@@ -13,10 +13,22 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-var Validator = validator.New()
+type Validator struct {
+	validator *validator.Validate
+}
 
-func Validate(payload interface{}) *core.RequestError {
-	if err := Validator.Struct(payload); err != nil {
+func NewValidator() *Validator {
+	v := &Validator{
+		validator: validator.New(),
+	}
+
+	v.RegisterCustomValidators()
+
+	return v
+}
+
+func (v *Validator) Validate(payload interface{}) *core.RequestError {
+	if err := v.validator.Struct(payload); err != nil {
 		var errors []string
 
 		for _, err := range err.(validator.ValidationErrors) {
@@ -36,19 +48,19 @@ func Validate(payload interface{}) *core.RequestError {
 	return nil
 }
 
-func RegisterCustomValidators() {
+func (v *Validator) RegisterCustomValidators() {
 
 	// Register custom validators for zero and null types
-	Validator.RegisterCustomTypeFunc(ValidateZeroString, zero.String{})
-	Validator.RegisterCustomTypeFunc(ValidateZeroInt, zero.Int{})
-	Validator.RegisterCustomTypeFunc(ValidateZeroBool, zero.Bool{})
-	Validator.RegisterCustomTypeFunc(ValidateZeroFloat, zero.Float{})
-	Validator.RegisterCustomTypeFunc(ValidateZeroTime, zero.Time{})
-	Validator.RegisterCustomTypeFunc(ValidateNullString, null.String{})
-	Validator.RegisterCustomTypeFunc(ValidateNullInt, null.Int{})
-	Validator.RegisterCustomTypeFunc(ValidateNullBool, null.Bool{})
-	Validator.RegisterCustomTypeFunc(ValidateNullFloat, null.Float{})
-	Validator.RegisterCustomTypeFunc(ValidateNullTime, null.Time{})
+	v.validator.RegisterCustomTypeFunc(ValidateZeroString, zero.String{})
+	v.validator.RegisterCustomTypeFunc(ValidateZeroInt, zero.Int{})
+	v.validator.RegisterCustomTypeFunc(ValidateZeroBool, zero.Bool{})
+	v.validator.RegisterCustomTypeFunc(ValidateZeroFloat, zero.Float{})
+	v.validator.RegisterCustomTypeFunc(ValidateZeroTime, zero.Time{})
+	v.validator.RegisterCustomTypeFunc(ValidateNullString, null.String{})
+	v.validator.RegisterCustomTypeFunc(ValidateNullInt, null.Int{})
+	v.validator.RegisterCustomTypeFunc(ValidateNullBool, null.Bool{})
+	v.validator.RegisterCustomTypeFunc(ValidateNullFloat, null.Float{})
+	v.validator.RegisterCustomTypeFunc(ValidateNullTime, null.Time{})
 }
 
 func ValidateZeroString(field reflect.Value) interface{} {

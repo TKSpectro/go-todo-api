@@ -1,14 +1,8 @@
 package model
 
 import (
-	"github.com/TKSpectro/go-todo-api/app/types/pagination"
-	"github.com/TKSpectro/go-todo-api/config/database"
-	"github.com/TKSpectro/go-todo-api/utils"
-
 	"gopkg.in/guregu/null.v4"
 	"gopkg.in/guregu/null.v4/zero"
-
-	"gorm.io/gorm"
 )
 
 type Todo struct {
@@ -27,32 +21,4 @@ func (todo *Todo) WriteRemote(remote Todo) {
 	todo.Description = remote.Description
 	todo.Completed = remote.Completed
 	todo.CompletedAt = remote.CompletedAt
-}
-
-func FindTodosByAccount(dest interface{}, meta *pagination.Meta, accountID uint) *gorm.DB {
-	return FindWithMeta(dest, &Todo{}, meta, database.DB.Where("account_id = ?", accountID))
-}
-
-func FindTodoByID(dest interface{}, id string, accountID uint) *gorm.DB {
-	return database.DB.Model(&Todo{}).Where("id = ? AND account_id = ?", id, accountID).Take(dest)
-}
-
-func CreateTodo(todo *Todo) *gorm.DB {
-	return database.DB.Create(todo)
-}
-
-func UpdateTodo(todo *Todo) *gorm.DB {
-	return database.DB.Save(todo)
-}
-
-func DeleteTodoByID(id string) *gorm.DB {
-	return database.DB.Delete(&Todo{}, id)
-}
-
-func CreateRandomTodo(accountID uint) *gorm.DB {
-	return database.DB.Create(&Todo{
-		Title:       zero.StringFrom(utils.RandomString(100, "")),
-		Description: zero.StringFrom(utils.RandomString(100, "")),
-		AccountID:   accountID,
-	})
 }

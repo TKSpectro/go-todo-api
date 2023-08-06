@@ -4,9 +4,9 @@ import (
 	_ "github.com/TKSpectro/go-todo-api/api"
 	"github.com/TKSpectro/go-todo-api/app/handler"
 	"github.com/TKSpectro/go-todo-api/app/model"
+	"github.com/TKSpectro/go-todo-api/app/service"
 	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
-	"github.com/TKSpectro/go-todo-api/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -19,8 +19,6 @@ func New() *fiber.App {
 
 	jwt.Init()
 
-	utils.RegisterCustomValidators()
-
 	app := fiber.New(fiber.Config{
 		ErrorHandler: ErrorHandler,
 	})
@@ -30,7 +28,12 @@ func New() *fiber.App {
 	// Recover from panics anywhere in the chain and handle the control to the centralized ErrorHandler
 	app.Use(recover.New())
 
-	handler.New(app)
+	as := service.NewAccountService(database.DB)
+	ts := service.NewTodoService(database.DB)
+
+	h := handler.NewHandler(as, ts)
+
+	h.RegisterRoutes(app)
 
 	return app
 }

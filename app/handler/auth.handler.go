@@ -22,14 +22,14 @@ import (
 // @Param        account body types.RegisterDTO true "Account"
 // @Success      200 {object} types.AuthResponse
 // @Router       /auth/register [post]
-func Register(c *fiber.Ctx) error {
+func (h *Handler) Register(c *fiber.Ctx) error {
 	remoteData := &types.RegisterDTO{}
 
-	if err := utils.ParseBodyAndValidate(c, remoteData); err != nil {
+	if err := ParseBodyAndValidate(c, remoteData, *h.validator); err != nil {
 		return err
 	}
 
-	err := model.FindAccountByEmail(struct{}{}, remoteData.Account.Email).Error
+	err := h.accountService.FindAccountByEmail(struct{}{}, remoteData.Account.Email).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return &core.ACCOUNT_WITH_EMAIL_ALREADY_EXISTS
 	}
@@ -67,15 +67,15 @@ func Register(c *fiber.Ctx) error {
 // @Param        account body types.LoginDTO true "Account"
 // @Success      200 {object} types.AuthResponse
 // @Router       /auth/login [put]
-func Login(c *fiber.Ctx) error {
+func (h *Handler) Login(c *fiber.Ctx) error {
 	remoteData := &types.LoginDTO{}
 
-	if err := utils.ParseBodyAndValidate(c, remoteData); err != nil {
+	if err := ParseBodyAndValidate(c, remoteData, *h.validator); err != nil {
 		return err
 	}
 
 	account := &model.Account{}
-	if err := model.FindAccountByEmail(account, remoteData.Account.Email).Error; err != nil {
+	if err := h.accountService.FindAccountByEmail(account, remoteData.Account.Email).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &core.NOT_FOUND
 		}
@@ -103,7 +103,7 @@ func Login(c *fiber.Ctx) error {
 // @Produce      json
 // @Success      200 {object} types.AuthResponse
 // @Router       /auth/refresh [put]
-func Refresh(c *fiber.Ctx) error {
+func (h *Handler) Refresh(c *fiber.Ctx) error {
 	var tokenPayload = locals.JwtPayload(c)
 
 	if tokenPayload.Type != "refresh" {
@@ -131,16 +131,16 @@ func Refresh(c *fiber.Ctx) error {
 	})
 }
 
-func RotateJWK(c *fiber.Ctx) error {
+func (h *Handler) RotateJWK(c *fiber.Ctx) error {
 	jwt.RotateJWK()
 
 	return c.SendStatus(fiber.StatusOK)
 }
 
-func Me(c *fiber.Ctx) error {
+func (h *Handler) Me(c *fiber.Ctx) error {
 	var account = &model.Account{}
 
-	err := model.FindAccountByID(account, locals.JwtPayload(c).AccountID).Error
+	err := h.accountService.FindAccountByID(account, locals.JwtPayload(c).AccountID).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &core.NOT_FOUND

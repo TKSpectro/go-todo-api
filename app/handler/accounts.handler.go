@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"strconv"
 
 	"github.com/TKSpectro/go-todo-api/app/model"
 	"github.com/TKSpectro/go-todo-api/app/types"
@@ -20,11 +21,11 @@ import (
 // @Produce      json
 // @Success      200  {array}  model.Account
 // @Router       /accounts [get]
-func GetAccounts(c *fiber.Ctx) error {
+func (h *Handler) GetAccounts(c *fiber.Ctx) error {
 	var accounts = &[]model.Account{}
 	var meta = locals.Meta(c)
 
-	err := model.FindAccounts(accounts, meta).Error
+	err := h.accountService.FindAccounts(accounts, meta).Error
 	if err != nil {
 		return &core.INTERNAL_SERVER_ERROR
 	}
@@ -44,15 +45,20 @@ func GetAccounts(c *fiber.Ctx) error {
 // @Param        id   path      int  true  "Account ID"
 // @Success      200  {object}  model.Account
 // @Router       /accounts/{id} [get]
-func GetAccount(c *fiber.Ctx) error {
+func (h *Handler) GetAccount(c *fiber.Ctx) error {
 	var account = &model.Account{}
 
-	remoteId := c.Params("id")
-	if remoteId == "" {
+	remoteIdString := c.Params("id")
+	if remoteIdString == "" {
 		return &core.BAD_REQUEST
 	}
 
-	err := model.FindAccountByID(account, remoteId).Error
+	remoteId, err := strconv.ParseUint(remoteIdString, 10, 32)
+	if err != nil {
+		return &core.BAD_REQUEST
+	}
+
+	err = h.accountService.FindAccountByID(account, uint(remoteId)).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &core.NOT_FOUND
