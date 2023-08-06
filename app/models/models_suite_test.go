@@ -18,9 +18,9 @@ func TestModels(t *testing.T) {
 var testApp *fiber.App
 
 var _ = BeforeSuite(func() {
-	test.Setup()
+	test.New()
 
-	testApp = app.Setup()
+	testApp = app.New()
 })
 
 var _ = AfterSuite(func() {

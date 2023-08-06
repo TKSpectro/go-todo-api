@@ -14,14 +14,14 @@ var (
 	DB_DSN        = fmt.Sprintf("%v:%v@tcp(127.0.0.1:%v)/%s", config.DB_USER, config.DB_ROOT_PASSWORD, config.DB_PORT, config.DB_NAME)
 )
 
-func Setup() {
+func New() {
 	ginkgo.GinkgoHelper()
 
 	if !config.IS_TEST {
-		panic("[Setup]::IS_TEST is not true")
+		panic("[New]::IS_TEST is not true")
 	}
 	if config.DB_NAME != "go_api_test" {
-		panic("[Setup]::Database name is not go_api_test")
+		panic("[New]::Database name is not go_api_test")
 	}
 
 	db := db(DB_SERVER_DSN)

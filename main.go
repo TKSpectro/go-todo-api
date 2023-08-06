@@ -9,7 +9,7 @@ import (
 // @version         1.0
 // @BasePath  /api
 func main() {
-	app := app.Setup()
+	app := app.New()
 
 	app.Listen(":3000")
 }

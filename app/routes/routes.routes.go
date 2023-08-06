@@ -5,7 +5,7 @@ import (
 	"github.com/gofiber/swagger"
 )
 
-func Setup(app *fiber.App) {
+func New(app *fiber.App) {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello from root")
 	})

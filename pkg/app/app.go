@@ -13,7 +13,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-func Setup() *fiber.App {
+func New() *fiber.App {
 	database.Connect()
 	database.Migrate(&models.Account{}, &models.Todo{})
 
@@ -30,7 +30,7 @@ func Setup() *fiber.App {
 	// Recover from panics anywhere in the chain and handle the control to the centralized ErrorHandler
 	app.Use(recover.New())
 
-	routes.Setup(app)
+	routes.New(app)
 
 	return app
 }

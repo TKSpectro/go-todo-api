@@ -18,9 +18,9 @@ func TestHandlers(t *testing.T) {
 var App *fiber.App
 
 var _ = BeforeSuite(func() {
-	test.Setup()
+	test.New()
 
-	App = app.Setup()
+	App = app.New()
 })
 
 var _ = AfterSuite(func() {
