@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/TKSpectro/go-todo-api/app/model"
-	"github.com/TKSpectro/go-todo-api/app/types"
 	"github.com/TKSpectro/go-todo-api/config"
 	"github.com/TKSpectro/go-todo-api/core"
+	"github.com/TKSpectro/go-todo-api/pkg/app/model"
+	"github.com/TKSpectro/go-todo-api/pkg/app/types"
 	"github.com/TKSpectro/go-todo-api/pkg/jwk"
 	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwt"

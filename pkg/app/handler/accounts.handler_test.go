@@ -5,9 +5,9 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/TKSpectro/go-todo-api/app/model"
-	"github.com/TKSpectro/go-todo-api/app/types"
 	"github.com/TKSpectro/go-todo-api/config/database"
+	"github.com/TKSpectro/go-todo-api/pkg/app/model"
+	"github.com/TKSpectro/go-todo-api/pkg/app/types"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
 	"github.com/TKSpectro/go-todo-api/test"
 	. "github.com/onsi/ginkgo/v2"

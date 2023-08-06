@@ -2,10 +2,10 @@ package app
 
 import (
 	_ "github.com/TKSpectro/go-todo-api/api"
-	"github.com/TKSpectro/go-todo-api/app/handler"
-	"github.com/TKSpectro/go-todo-api/app/model"
-	"github.com/TKSpectro/go-todo-api/app/service"
 	"github.com/TKSpectro/go-todo-api/config/database"
+	"github.com/TKSpectro/go-todo-api/pkg/app/handler"
+	"github.com/TKSpectro/go-todo-api/pkg/app/model"
+	"github.com/TKSpectro/go-todo-api/pkg/app/service"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
 
 	"github.com/gofiber/fiber/v2"

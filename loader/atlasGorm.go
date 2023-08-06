@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"ariga.io/atlas-provider-gorm/gormschema"
-	"github.com/TKSpectro/go-todo-api/app/model"
+	"github.com/TKSpectro/go-todo-api/pkg/app/model"
 )
 
 func main() {

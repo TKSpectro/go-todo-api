@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/TKSpectro/go-todo-api/app/types/pagination"
 	"github.com/TKSpectro/go-todo-api/config/database"
+	"github.com/TKSpectro/go-todo-api/pkg/app/types/pagination"
 	"github.com/TKSpectro/go-todo-api/utils"
 	"gorm.io/gorm"
 )

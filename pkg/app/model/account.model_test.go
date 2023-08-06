@@ -1,7 +1,7 @@
 package model_test
 
 import (
-	"github.com/TKSpectro/go-todo-api/app/model"
+	"github.com/TKSpectro/go-todo-api/pkg/app/model"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )

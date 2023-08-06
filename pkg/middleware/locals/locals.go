@@ -1,7 +1,7 @@
 package locals
 
 import (
-	"github.com/TKSpectro/go-todo-api/app/types/pagination"
+	"github.com/TKSpectro/go-todo-api/pkg/app/types/pagination"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
 	"github.com/gofiber/fiber/v2"
 )

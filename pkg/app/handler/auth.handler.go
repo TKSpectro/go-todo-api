@@ -3,10 +3,10 @@ package handler
 import (
 	"errors"
 
-	"github.com/TKSpectro/go-todo-api/app/model"
-	"github.com/TKSpectro/go-todo-api/app/types"
 	"github.com/TKSpectro/go-todo-api/config/database"
 	"github.com/TKSpectro/go-todo-api/core"
+	"github.com/TKSpectro/go-todo-api/pkg/app/model"
+	"github.com/TKSpectro/go-todo-api/pkg/app/types"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
 	"github.com/TKSpectro/go-todo-api/pkg/middleware/locals"
 	"github.com/TKSpectro/go-todo-api/utils"

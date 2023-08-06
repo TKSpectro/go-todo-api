@@ -1,8 +1,8 @@
 package types
 
 import (
-	"github.com/TKSpectro/go-todo-api/app/model"
-	"github.com/TKSpectro/go-todo-api/app/types/pagination"
+	"github.com/TKSpectro/go-todo-api/pkg/app/model"
+	"github.com/TKSpectro/go-todo-api/pkg/app/types/pagination"
 )
 
 type GetAccountsResponse struct {

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/TKSpectro/go-todo-api/app/service"
+	"github.com/TKSpectro/go-todo-api/pkg/app/service"
 )
 
 type Handler struct {
