@@ -1,0 +1,50 @@
+version: '3.9'
+
+name: go-todo-api-test
+
+services:
+    mariadb:
+        image: mariadb:10.5.8
+        healthcheck:
+            test: mariadb-admin ping -ppass
+            interval: 5s
+            timeout: 1s
+            retries: 3
+            start_period: 20s
+            start_interval: 5s
+        environment:
+            MYSQL_USER: $TEST_DB_USER
+            MYSQL_DATABASE: $TEST_DB_NAME
+            MYSQL_ROOT_PASSWORD: $TEST_DB_ROOT_PASSWORD
+        networks:
+            - db
+
+    migrate:
+        image: arigaio/atlas:latest
+        command: >
+            migrate apply
+            --url maria://$TEST_DB_USER:$TEST_DB_ROOT_PASSWORD@mariadb:3306/$TEST_DB_NAME
+            --dir "file://migrations?format=golang-migrate"
+        networks:
+            - db
+        depends_on:
+            mariadb:
+                condition: service_healthy
+        volumes:
+            - ../migrations/:/migrations
+
+    test_app:
+        build:
+            context: ../
+            dockerfile: ./test/Dockerfile
+        environment:
+            TEST_DB_LOCAL_PORT: 3306
+            TEST_DB_HOST: mariadb
+        networks:
+            - db
+        depends_on:
+            migrate:
+                condition: service_completed_successfully
+
+networks:
+    db:

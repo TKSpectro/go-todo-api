@@ -18,6 +18,7 @@ var (
 	ROOT_PATH = getEnv("GTA_ROOT_PATH", "")
 	PORT      = getEnv("PORT", "3000")
 
+	DB_HOST          = getEnv("DB_HOST", "localhost")
 	DB_USER          = getEnv("DB_USER", "root")
 	DB_ROOT_PASSWORD = getEnv("DB_ROOT_PASSWORD", "root")
 	DB_NAME          = getEnv("DB_NAME", "go_api")
@@ -30,6 +31,7 @@ var (
 
 	// Testing environment variables
 	IS_TEST               = getEnvBool("IS_TEST", "false")
+	TEST_DB_HOST          = getEnv("TEST_DB_HOST", "localhost")
 	TEST_DB_USER          = getEnv("TEST_DB_USER", "root")
 	TEST_DB_ROOT_PASSWORD = getEnv("TEST_DB_ROOT_PASSWORD", "root")
 	TEST_DB_NAME          = getEnv("TEST_DB_NAME", "go_api_test")

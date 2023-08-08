@@ -13,26 +13,27 @@ import (
 )
 
 func Connect() *gorm.DB {
-	dsn := fmt.Sprintf("%v:%v@tcp(127.0.0.1:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", config.DB_USER, config.DB_ROOT_PASSWORD, config.DB_PORT, config.DB_NAME)
+	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", config.DB_USER, config.DB_ROOT_PASSWORD, config.DB_HOST, config.DB_PORT, config.DB_NAME)
 
 	return connect(dsn)
 }
 
-// ConnectToServer connects to the database server without specifying a database
-func ConnectToServer() *gorm.DB {
-	dsn := fmt.Sprintf("%v:%v@tcp(127.0.0.1:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", config.DB_USER, config.DB_ROOT_PASSWORD, config.DB_PORT, "")
+// ConnectToTestServer connects to the database server without specifying a database
+func ConnectToTestServer() *gorm.DB {
+	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", config.TEST_DB_USER, config.TEST_DB_ROOT_PASSWORD, config.TEST_DB_HOST, config.TEST_DB_PORT, "")
 
 	return connect(dsn)
 }
 
 // ConnectToTest connects to the test database
 func ConnectToTest() *gorm.DB {
-	dsn := fmt.Sprintf("%v:%v@tcp(127.0.0.1:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", config.TEST_DB_USER, config.TEST_DB_ROOT_PASSWORD, config.TEST_DB_PORT, config.TEST_DB_NAME)
+	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", config.TEST_DB_USER, config.TEST_DB_ROOT_PASSWORD, config.TEST_DB_HOST, config.TEST_DB_PORT, config.TEST_DB_NAME)
 
 	return connect(dsn)
 }
 
 func connect(dsn string) *gorm.DB {
+	fmt.Println("[DATABASE]::CONNECTING:", dsn)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		// Logger:  logger.Default.LogMode(logger.Info),
 		NowFunc: func() time.Time { return time.Now().Local() },

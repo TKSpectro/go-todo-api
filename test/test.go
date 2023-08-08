@@ -19,7 +19,7 @@ func Setup() *gorm.DB {
 		panic("[New]::ROOT_PATH is empty. Please set the environment variable GTA_ROOT_PATH to the root path of the project (See makefile:test)")
 	}
 
-	dbServer := database.ConnectToServer()
+	dbServer := database.ConnectToTestServer()
 
 	dbServer.Exec("DROP DATABASE IF EXISTS " + config.TEST_DB_NAME)
 	dbServer.Exec("CREATE DATABASE IF NOT EXISTS " + config.TEST_DB_NAME)
@@ -38,6 +38,7 @@ func Teardown(db *gorm.DB) {
 	ginkgo.GinkgoHelper()
 
 	db.Exec("DROP DATABASE IF EXISTS " + config.TEST_DB_NAME)
+	db.Exec("CREATE DATABASE IF NOT EXISTS " + config.TEST_DB_NAME)
 
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()
