@@ -30,3 +30,5 @@ jwk.json
 
 # Test report
 report.json
+
+tailwind.config.js

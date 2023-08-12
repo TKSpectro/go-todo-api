@@ -12,18 +12,25 @@ import (
 
 func Protected(c *fiber.Ctx) error {
 	authHeader := c.Get("Authorization")
+	authCookie := c.Cookies("go-todo-api_auth")
 
-	if authHeader == "" {
+	token := ""
+
+	if authHeader != "" {
+		chunks := strings.Split(authHeader, " ")
+
+		if len(chunks) < 2 {
+			return &utils.UNAUTHORIZED
+		}
+
+		token = chunks[1]
+	} else if authCookie != "" {
+		token = authCookie
+	} else {
 		return &utils.UNAUTHORIZED
 	}
 
-	chunks := strings.Split(authHeader, " ")
-
-	if len(chunks) < 2 {
-		return &utils.UNAUTHORIZED
-	}
-
-	payload, err := jwt.Verify(chunks[1])
+	payload, err := jwt.Verify(token)
 	if err != nil {
 		return utils.RequestErrorFrom(&utils.UNAUTHORIZED, err.Error())
 	}

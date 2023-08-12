@@ -1,0 +1,11 @@
+<a href="/">Home</a>
+
+<div>
+    <form hx-post="/todos" hx-swap="afterbegin" hx-target="#todo-list">
+        <label for="title">Create a new todo:</label>
+        <input type="text" name="title" class="border" required />
+        <button type="submit">Create</button>
+    </form>
+</div>
+
+<div id="todo-list" class="container">{{template "todo-list" . }}</div>
