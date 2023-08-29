@@ -33,6 +33,18 @@ func defaultMap(c *fiber.Ctx, h *Handler, m *fiber.Map) fiber.Map {
 	return *m
 }
 
+// renderPartial
+// When rendering partials we need to use this instead of c.Render because it would include the whole template with the layout etc.
+// As we use htmx this makes no sense and we only want to render the partial itself
+//
+// The templateName and name CAN be the same if the whole partial is in its own file
+// but sometimes a partial will be the templateName ...-list and the name will be
+// ...-item (...-list.html containing a block/define for ...-item.html)
+func renderPartial(c *fiber.Ctx, templateName string, name string, data interface{}) error {
+	tmpl := template.Must(template.ParseFiles(config.ROOT_PATH + "/pkg/view/partials/" + templateName + ".html"))
+	return tmpl.ExecuteTemplate(c.Response().BodyWriter(), name, data)
+}
+
 func (h *Handler) VIndex(c *fiber.Ctx) error {
 	return c.Render("index", defaultMap(c, h, nil))
 }
@@ -65,8 +77,9 @@ func (h *Handler) VTodosCreate(c *fiber.Ctx) error {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 
-	tmpl := template.Must(template.ParseFiles(config.ROOT_PATH + "/pkg/view/partials/todo-list.html"))
-	tmpl.ExecuteTemplate(c.Response().BodyWriter(), "todo-item", todo)
+	if err := renderPartial(c, "todo-list", "todo-item", todo).Error(); err != "" {
+		return &utils.INTERNAL_SERVER_ERROR
+	}
 
 	return nil
 }
@@ -88,8 +101,9 @@ func (h *Handler) VTodosComplete(c *fiber.Ctx) error {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 
-	tmpl := template.Must(template.ParseFiles(config.ROOT_PATH + "/pkg/view/partials/todo-list.html"))
-	tmpl.ExecuteTemplate(c.Response().BodyWriter(), "todo-complete-toggle", todo)
+	if err := renderPartial(c, "todo-list", "todo-complete-toggle", todo).Error(); err != "" {
+		return &utils.INTERNAL_SERVER_ERROR
+	}
 
 	return nil
 }

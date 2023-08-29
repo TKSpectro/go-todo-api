@@ -23,7 +23,6 @@ func New(db *gorm.DB) *fiber.App {
 		ErrorHandler: ErrorHandler,
 		Views:        engine,
 		ViewsLayout:  "layouts/main",
-		//  PassLocalsToViews: true, // TODO: Look into this
 	})
 
 	app.Use(logger.New())
