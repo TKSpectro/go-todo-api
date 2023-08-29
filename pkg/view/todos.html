@@ -1,11 +1,28 @@
-<a href="/">Home</a>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script
+            src="https://unpkg.com/htmx.org@1.9.4"
+            integrity="sha384-zUfuhFKKZCbHTY6aRR46gxiqszMk5tcHjsVFxnUo8VMus4kHGVdIYVbOYYNlKmHV"
+            crossorigin="anonymous"
+        ></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="/js/main.js"></script>
+    </head>
+    <body>
+        {{template "nav" .}}
 
-<div>
-    <form hx-post="/todos" hx-swap="afterbegin" hx-target="#todo-list">
-        <label for="title">Create a new todo:</label>
-        <input type="text" name="title" class="border" required />
-        <button type="submit">Create</button>
-    </form>
-</div>
+        <div>
+            <form hx-post="/todos" hx-swap="afterbegin" hx-target="#todo-list">
+                <label for="title">Create a new todo:</label>
+                <input type="text" name="title" class="border" required />
+                <button type="submit">+</button>
+            </form>
+        </div>
 
-<div id="todo-list" class="container">{{template "todo-list" . }}</div>
+        <div id="todo-list" class="container">{{template "todo-list" . }}</div>
+    </body>
+</html>

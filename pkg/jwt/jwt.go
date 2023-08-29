@@ -16,6 +16,7 @@ import (
 
 // TokenPayload defines the payload for the token
 type TokenPayload struct {
+	Valid     bool
 	AccountID uint
 	Type      string
 	Secret    string
@@ -116,6 +117,7 @@ func Verify(token string) (*TokenPayload, error) {
 	}
 
 	return &TokenPayload{
+		Valid:     true,
 		AccountID: uint(claims[CLAIM_ACCOUNT_ID].(float64)),
 		Type:      claims[CLAIM_TYPE].(string),
 		Secret:    claims[CLAIM_SECRET].(string),

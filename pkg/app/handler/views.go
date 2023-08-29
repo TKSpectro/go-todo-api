@@ -13,10 +13,26 @@ import (
 	"gorm.io/gorm"
 )
 
+func defaultMap(c *fiber.Ctx, h *Handler, m *fiber.Map) fiber.Map {
+	if m == nil {
+		m = &fiber.Map{}
+	}
+
+	(*m)["IsAuthenticated"] = locals.JwtPayload(c).Valid
+	(*m)["AccountID"] = locals.JwtPayload(c).AccountID
+
+	if locals.JwtPayload(c).Valid {
+		account := &model.Account{}
+		h.accountService.FindAccountByID(account, locals.JwtPayload(c).AccountID)
+
+		(*m)["Account"] = account
+	}
+
+	return *m
+}
+
 func (h *Handler) VIndex(c *fiber.Ctx) error {
-	return c.Render("index", fiber.Map{
-		"Title": "Hello, World!",
-	})
+	return c.Render("index", defaultMap(c, h, nil))
 }
 
 func (h *Handler) VTodosIndex(c *fiber.Ctx) error {
@@ -29,10 +45,9 @@ func (h *Handler) VTodosIndex(c *fiber.Ctx) error {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 
-	return c.Render("todos", fiber.Map{
-		"Title": "Todos",
+	return c.Render("todos", defaultMap(c, h, &fiber.Map{
 		"Todos": todos,
-	})
+	}))
 }
 
 func (h *Handler) VTodosCreate(c *fiber.Ctx) error {
@@ -79,9 +94,7 @@ func (h *Handler) VTodosDelete(c *fiber.Ctx) error {
 }
 
 func (h *Handler) VLogin(c *fiber.Ctx) error {
-	return c.Render("login", fiber.Map{
-		"Title": "Login",
-	})
+	return c.Render("login", defaultMap(c, h, nil))
 }
 
 func (h *Handler) VLoginPost(c *fiber.Ctx) error {
@@ -120,6 +133,15 @@ func (h *Handler) VLoginPost(c *fiber.Ctx) error {
 		Value:    auth.RefreshToken,
 		HTTPOnly: true,
 	})
+
+	c.Response().Header.Set("HX-Redirect", "/")
+
+	return c.Status(http.StatusOK).SendString("")
+}
+
+func (h *Handler) VLogout(c *fiber.Ctx) error {
+	c.ClearCookie("go-todo-api_auth")
+	c.ClearCookie("go-todo-api_refresh")
 
 	c.Response().Header.Set("HX-Redirect", "/")
 

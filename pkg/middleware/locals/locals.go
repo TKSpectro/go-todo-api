@@ -11,7 +11,13 @@ const (
 	KEY_META    = "LOCALS_META"
 )
 
-func JwtPayload(c *fiber.Ctx) *jwt.TokenPayload {
+func JwtPayload(c *fiber.Ctx) (payload *jwt.TokenPayload) {
+	if c.Locals(KEY_PAYLOAD) == nil {
+		return &jwt.TokenPayload{
+			Valid: false,
+		}
+	}
+
 	return c.Locals(KEY_PAYLOAD).(*jwt.TokenPayload)
 }
 

@@ -1,0 +1,40 @@
+{{ block "nav" . }}
+<nav class="bg-gray-800">
+    <div class="mx-auto max-w-7xl px-8">
+        <div class="relative flex h-16 items-center justify-between">
+            <div class="ml-6 flex flex-1 items-stretch justify-start space-x-4">
+                <a
+                    href="/"
+                    class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
+                    aria-current="page"
+                    >Home</a
+                >
+                {{if .IsAuthenticated}}
+                <a
+                    href="/todos"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                    >Todos</a
+                >
+                {{end}}
+            </div>
+            <div class="inset-y-0 right-0 items-center pr-2 flex space-x-4">
+                {{if .IsAuthenticated}}
+                <button
+                    class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
+                    hx-post="/logout"
+                >
+                    {{.Account.Email}}
+                </button>
+                {{else}}
+                <a
+                    href="/login"
+                    class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
+                    aria-current="page"
+                    >Login</a
+                >
+                {{end}}
+            </div>
+        </div>
+    </div>
+</nav>
+{{ end }}
