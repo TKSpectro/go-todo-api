@@ -22,7 +22,7 @@ func New(db *gorm.DB) *fiber.App {
 	app := fiber.New(fiber.Config{
 		ErrorHandler: ErrorHandler,
 		Views:        engine,
-		ViewsLayout:  config.ROOT_PATH + "/layouts/main",
+		ViewsLayout:  "layouts/main",
 	})
 
 	app.Use(logger.New())

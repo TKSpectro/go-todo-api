@@ -15,7 +15,7 @@ var (
 )
 
 var (
-	ROOT_PATH = getEnv("GTA_ROOT_PATH", "")
+	ROOT_PATH = getEnv("GTA_ROOT_PATH", ".")
 	PORT      = getEnv("PORT", "3000")
 
 	DB_HOST          = getEnv("DB_HOST", "localhost")
