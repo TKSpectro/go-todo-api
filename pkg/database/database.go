@@ -33,7 +33,6 @@ func ConnectToTest() *gorm.DB {
 }
 
 func connect(dsn string) *gorm.DB {
-	fmt.Println("[DATABASE]::CONNECTING:", dsn)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		// Logger:  logger.Default.LogMode(logger.Info),
 		NowFunc: func() time.Time { return time.Now().Local() },

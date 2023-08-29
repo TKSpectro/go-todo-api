@@ -2,6 +2,7 @@ package app
 
 import (
 	_ "github.com/TKSpectro/go-todo-api/api"
+	"github.com/TKSpectro/go-todo-api/config"
 	"github.com/TKSpectro/go-todo-api/pkg/app/handler"
 	"github.com/TKSpectro/go-todo-api/pkg/app/service"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
@@ -16,12 +17,12 @@ import (
 func New(db *gorm.DB) *fiber.App {
 	jwt.Init()
 
-	engine := html.New("./pkg/view", ".html")
+	engine := html.New(config.ROOT_PATH+"/pkg/view", ".html")
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: ErrorHandler,
 		Views:        engine,
-		ViewsLayout:  "layouts/main",
+		ViewsLayout:  config.ROOT_PATH + "/layouts/main",
 	})
 
 	app.Use(logger.New())
