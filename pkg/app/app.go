@@ -22,9 +22,7 @@ func New(db *gorm.DB) *fiber.App {
 	app := fiber.New(fiber.Config{
 		ErrorHandler: ErrorHandler,
 		Views:        engine,
-		//! Can't use layouts in combination with rendering in create handlers (layout will get rendered too -> includes nav -> needs specific variables passed to it)
-		//! This could maybe be solved by loading the template in the handler and executing the template manually. See: https://github.com/rngallen/gohtmx/blob/main/main.go
-		// ViewsLayout:  "layouts/main",
+		ViewsLayout:  "layouts/main",
 		//  PassLocalsToViews: true, // TODO: Look into this
 	})
 

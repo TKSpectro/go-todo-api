@@ -1,2 +1,23 @@
-{{define "todo-list"}} {{range .Todos}} {{template "todo-item" .}} {{end}}
-{{end}}
+{{define "todo-list"}} {{range .Todos}} {{block "todo-item" .}}
+<div class="todo border-gray-900 border my-2 rounded-lg">
+    <div class="id">{{.ID}}</div>
+    <div class="title">{{.Title.String}}</div>
+    {{block "todo-complete-toggle" .}}
+    <input
+        type="checkbox"
+        hx-put="/todos/{{.ID}}/complete"
+        hx-swap="outerHTML"
+        {{if
+        .Completed}}checked{{end}}
+    />
+    {{end}}
+    <button
+        hx-delete="/todos/{{.ID}}"
+        hx-confirm="Are you sure?"
+        hx-target="closest .todo"
+        hx-swap="outerHTML"
+    >
+        Delete
+    </button>
+</div>
+{{end}} {{end}} {{end}}

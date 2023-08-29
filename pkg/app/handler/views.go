@@ -2,8 +2,10 @@ package handler
 
 import (
 	"errors"
+	"html/template"
 	"net/http"
 
+	"github.com/TKSpectro/go-todo-api/config"
 	"github.com/TKSpectro/go-todo-api/pkg/app/model"
 	"github.com/TKSpectro/go-todo-api/pkg/app/types"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
@@ -63,10 +65,13 @@ func (h *Handler) VTodosCreate(c *fiber.Ctx) error {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 
-	return c.Render("todo-item", todo)
+	tmpl := template.Must(template.ParseFiles(config.ROOT_PATH + "/pkg/view/partials/todo-list.html"))
+	tmpl.ExecuteTemplate(c.Response().BodyWriter(), "todo-item", todo)
+
+	return nil
 }
 
-func (h *Handler) VTodosUpdate(c *fiber.Ctx) error {
+func (h *Handler) VTodosComplete(c *fiber.Ctx) error {
 	id := c.Params("id")
 
 	todo := &model.Todo{}
@@ -83,7 +88,10 @@ func (h *Handler) VTodosUpdate(c *fiber.Ctx) error {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 
-	return c.Render("todo-complete-toggle", todo)
+	tmpl := template.Must(template.ParseFiles(config.ROOT_PATH + "/pkg/view/partials/todo-list.html"))
+	tmpl.ExecuteTemplate(c.Response().BodyWriter(), "todo-complete-toggle", todo)
+
+	return nil
 }
 
 func (h *Handler) VTodosDelete(c *fiber.Ctx) error {
