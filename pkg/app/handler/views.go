@@ -42,7 +42,12 @@ func defaultMap(c *fiber.Ctx, h *Handler, m *fiber.Map) fiber.Map {
 // ...-item (...-list.html containing a block/define for ...-item.html)
 func renderPartial(c *fiber.Ctx, templateName string, name string, data interface{}) error {
 	tmpl := template.Must(template.ParseFiles(config.ROOT_PATH + "/pkg/view/partials/" + templateName + ".html"))
-	return tmpl.ExecuteTemplate(c.Response().BodyWriter(), name, data)
+	err := tmpl.ExecuteTemplate(c.Response().BodyWriter(), name, data)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (h *Handler) VIndex(c *fiber.Ctx) error {
@@ -77,7 +82,7 @@ func (h *Handler) VTodosCreate(c *fiber.Ctx) error {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 
-	if err := renderPartial(c, "todo-list", "todo-item", todo).Error(); err != "" {
+	if err := renderPartial(c, "todo-list", "todo-item", todo); err != nil {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 
@@ -101,7 +106,7 @@ func (h *Handler) VTodosComplete(c *fiber.Ctx) error {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 
-	if err := renderPartial(c, "todo-list", "todo-complete-toggle", todo).Error(); err != "" {
+	if err := renderPartial(c, "todo-list", "todo-complete-toggle", todo); err != nil {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 
