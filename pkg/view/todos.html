@@ -6,4 +6,18 @@
     </form>
 </div>
 
+<div>
+    <ul id="filters" class="flex space-x-2 my-4 ml-2">
+        <li class="py-2 px-4 border rounded hover:bg-gray-200">
+            <a href="/todos">All</a>
+        </li>
+        <li class="py-2 px-4 border rounded hover:bg-gray-200">
+            <a href="/todos?filter[completed]=0">Active</a>
+        </li>
+        <li class="py-2 px-4 border rounded hover:bg-gray-200">
+            <a href="/todos?filter[completed]=1">Completed</a>
+        </li>
+    </ul>
+</div>
+
 <div id="todo-list" class="container">{{template "todo-list" . }}</div>
