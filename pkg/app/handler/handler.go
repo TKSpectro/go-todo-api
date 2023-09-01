@@ -41,13 +41,34 @@ func (h *Handler) FindWithMeta(dest interface{}, model interface{}, meta *pagina
 		query = query.Where(filtersToQuery(filters))
 	}
 
+	query = query.Offset(meta.Offset).Limit(meta.Limit)
+
+	orders := &meta.Order
+	if orders != nil && len(*orders) > 0 {
+		query = query.Order(ordersToQuery(orders))
+	}
+
 	countMeta(meta, query)
 
-	return query.
-		Offset(meta.Offset).
-		Limit(meta.Limit).
-		Order(meta.Order).
-		Find(dest)
+	return query.Find(dest)
+}
+
+func ordersToQuery(orders *[]pagination.OrderEntry) string {
+	query := ""
+
+	firstOrder := true
+
+	for _, order := range *orders {
+		if !firstOrder {
+			query += ", "
+		} else {
+			firstOrder = false
+		}
+
+		query += order.Key + " " + order.Direction
+	}
+
+	return query
 }
 
 func filtersToQuery(filters *[]pagination.FilterEntry) string {

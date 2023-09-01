@@ -24,7 +24,7 @@ func (h *Handler) GetTodos(c *fiber.Ctx) error {
 	var meta = locals.Meta(c)
 
 	var todos = &[]model.Todo{}
-	if err := h.todoService.FindTodosByAccount(todos, meta, locals.JwtPayload(c).AccountID).Error; err != nil {
+	if err := h.FindWithMeta(todos, &model.Todo{}, meta, h.db.Where("account_id = ?", locals.JwtPayload(c).AccountID)).Error; err != nil {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 

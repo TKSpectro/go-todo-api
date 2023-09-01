@@ -22,11 +22,16 @@ type Meta struct {
 
 	Filters []FilterEntry `json:"-"`
 	Search  string        `json:"-"`
-	Order   string        `json:"-"`
+	Order   []OrderEntry  `json:"-"`
 }
 
 type FilterEntry struct {
 	Key      string
 	Operator string
 	Value    string
+}
+
+type OrderEntry struct {
+	Key       string
+	Direction string
 }

@@ -2,7 +2,6 @@ package service
 
 import (
 	"github.com/TKSpectro/go-todo-api/pkg/app/model"
-	"github.com/TKSpectro/go-todo-api/pkg/app/types/pagination"
 	"github.com/TKSpectro/go-todo-api/utils"
 	"gopkg.in/guregu/null.v4/zero"
 	"gorm.io/gorm"
@@ -22,17 +21,11 @@ func NewTodoService(db *gorm.DB) *TodoService {
 
 // TODO: Maybe move this to a separate file (own package?)
 type ITodoService interface {
-	FindTodosByAccount(dest interface{}, meta *pagination.Meta, accountID uint) *gorm.DB
 	FindTodoByID(dest interface{}, id string, accountID uint) *gorm.DB
 	CreateTodo(todo *model.Todo) *gorm.DB
 	UpdateTodo(todo *model.Todo) *gorm.DB
 	DeleteTodoByID(id string) *gorm.DB
 	CreateRandomTodo(accountID uint) *gorm.DB
-}
-
-// TODO: Maybe cleanup the base model call
-func (ts *TodoService) FindTodosByAccount(dest interface{}, meta *pagination.Meta, accountID uint) *gorm.DB {
-	return model.FindWithMeta(ts.db, dest, &model.Todo{}, meta, ts.db.Where("account_id = ?", accountID))
 }
 
 func (ts *TodoService) FindTodoByID(dest interface{}, id string, accountID uint) *gorm.DB {

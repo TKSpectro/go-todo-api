@@ -8,6 +8,7 @@ import (
 	"github.com/TKSpectro/go-todo-api/config"
 	"github.com/TKSpectro/go-todo-api/pkg/app/model"
 	"github.com/TKSpectro/go-todo-api/pkg/app/types"
+	"github.com/TKSpectro/go-todo-api/pkg/app/types/pagination"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
 	"github.com/TKSpectro/go-todo-api/pkg/middleware/locals"
 	"github.com/TKSpectro/go-todo-api/utils"
@@ -57,10 +58,13 @@ func (h *Handler) VIndex(c *fiber.Ctx) error {
 func (h *Handler) VTodosIndex(c *fiber.Ctx) error {
 	var meta = locals.Meta(c)
 
-	meta.Order = "created_at desc"
+	meta.Order = append(meta.Order, pagination.OrderEntry{
+		Key:       "created_at",
+		Direction: "desc",
+	})
 
 	var todos = &[]model.Todo{}
-	if err := h.todoService.FindTodosByAccount(todos, meta, locals.JwtPayload(c).AccountID).Error; err != nil {
+	if err := h.FindWithMeta(todos, &model.Todo{}, meta, h.db.Where("account_id = ?", locals.JwtPayload(c).AccountID)).Error; err != nil {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 

@@ -21,19 +21,13 @@ func Pagination(c *fiber.Ctx) error {
 		limit = 10
 	}
 
-	// TODO: Sorting needs to be completed. This is just a placeholder/simple implementation
-	order := c.Query("order")
-	if order == "" {
-		order = "id asc"
-	}
-
 	c.Locals(locals.KEY_META, &pagination.Meta{
 		Page:   page,
 		Limit:  limit,
 		Skip:   (page - 1) * limit,
 		Offset: (page - 1) * limit,
 
-		Order:   order,
+		Order:   parseOrders(c),
 		Search:  parseSearch(c.Query("search")),
 		Filters: parseFilters(c),
 	})
@@ -78,4 +72,32 @@ func parseSearch(search string) string {
 	}
 
 	return "%" + search + "%"
+}
+
+// parseOrders parses the order string and returns a slice of OrderEntry
+// The allowed format is ?order[id]=asc or ?order=id or ?order[id]=desc
+// If the direction is not specified, asc is used
+func parseOrders(c *fiber.Ctx) []pagination.OrderEntry {
+	orders := []pagination.OrderEntry{}
+
+	queryArgs := c.Context().QueryArgs()
+
+	queryArgs.VisitAll(func(key, value []byte) {
+		if strings.HasPrefix(string(key), "order") {
+			entries := strings.Split(string(key[6:]), "]")
+
+			direction := "asc"
+
+			if value != nil && string(value) == "desc" {
+				direction = string(value)
+			}
+
+			orders = append(orders, pagination.OrderEntry{
+				Key:       entries[0],
+				Direction: direction,
+			})
+		}
+	})
+
+	return orders
 }
