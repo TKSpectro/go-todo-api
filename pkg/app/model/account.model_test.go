@@ -10,7 +10,7 @@ var _ = Describe("Account.Model", func() {
 	Describe("WriteRemote", func() {
 		It("empty", func() {
 			account := model.Account{}
-			account.WriteRemote(model.Account{})
+			account.New(model.Account{})
 
 			Expect(account.Email).To(Equal(""))
 			Expect(account.Password).To(Equal(""))
@@ -21,7 +21,7 @@ var _ = Describe("Account.Model", func() {
 
 		It("with data", func() {
 			account := model.Account{}
-			account.WriteRemote(model.Account{
+			account.New(model.Account{
 				Email:       "test@turbomeet.xyz",
 				Password:    "password",
 				Firstname:   "Firstname",

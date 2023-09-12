@@ -34,7 +34,7 @@ func (h *Handler) Register(c *fiber.Ctx) error {
 
 	account := &model.Account{}
 	// Convert remoteData.Account from RegisterDTOBody to Account type
-	account.WriteRemote(utils.Convert(model.Account{}, &remoteData.Account))
+	account.New(utils.Convert(model.Account{}, &remoteData.Account))
 
 	account.TokenSecret = model.GenerateSecretToken()
 	hashedPassword, err := model.HashPassword(remoteData.Account.Password)

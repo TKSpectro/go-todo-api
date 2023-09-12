@@ -84,7 +84,7 @@ func (h *Handler) CreateTodo(c *fiber.Ctx) error {
 	}
 
 	var todo = &model.Todo{}
-	todo.WriteRemote(remoteData.Todo)
+	todo.New(remoteData.Todo)
 	todo.AccountID = locals.JwtPayload(c).AccountID
 
 	if err := h.todoService.CreateTodo(todo).Error; err != nil {
@@ -126,7 +126,7 @@ func (h *Handler) UpdateTodo(c *fiber.Ctx) error {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 
-	todo.WriteRemote(remoteData.Todo)
+	todo.New(remoteData.Todo)
 
 	if err := h.todoService.UpdateTodo(todo).Error; err != nil {
 		return utils.RequestErrorFrom(&utils.INTERNAL_SERVER_ERROR, err.Error())

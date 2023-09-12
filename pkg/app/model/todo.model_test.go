@@ -14,7 +14,7 @@ var _ = Describe("Todo.Model", func() {
 	Describe("WriteRemote", func() {
 		It("empty", func() {
 			todo := model.Todo{}
-			todo.WriteRemote(model.Todo{})
+			todo.New(model.Todo{})
 
 			Expect(todo.Title).To(Equal(zero.NewString("", false)))
 			Expect(todo.Description).To(Equal(zero.NewString("", false)))
@@ -26,7 +26,7 @@ var _ = Describe("Todo.Model", func() {
 			time := time.Now()
 
 			todo := model.Todo{}
-			todo.WriteRemote(model.Todo{
+			todo.New(model.Todo{
 				Title:       zero.NewString("Title", true),
 				Description: zero.NewString("Description", true),
 				Completed:   true,

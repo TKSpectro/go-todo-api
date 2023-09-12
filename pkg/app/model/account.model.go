@@ -17,7 +17,7 @@ type Account struct {
 	Todos []Todo `gorm:"foreignKey:AccountID" json:"todos"`
 }
 
-func (account *Account) WriteRemote(remote Account) {
+func (account *Account) New(remote Account) {
 	account.Email = remote.Email
 	account.Firstname = remote.Firstname
 	account.Lastname = remote.Lastname

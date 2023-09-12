@@ -16,7 +16,7 @@ type Todo struct {
 	// Account   Account
 }
 
-func (todo *Todo) WriteRemote(remote Todo) {
+func (todo *Todo) New(remote Todo) {
 	todo.Title = remote.Title
 	todo.Description = remote.Description
 	todo.Completed = remote.Completed
