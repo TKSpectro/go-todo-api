@@ -54,8 +54,10 @@ func (h *Handler) RegisterApiRoutes(app *fiber.App) {
 
 	todos := api.Group("/todos")
 	todos.Get("/", middleware.Protected, middleware.Pagination, h.GetTodos)
+	todos.Get("/csv", middleware.Protected, h.ExportCSVTodos)
 	todos.Get("/:id", middleware.Protected, h.GetTodo)
 	todos.Post("/", middleware.Protected, h.CreateTodo)
+	todos.Post("/csv", middleware.Protected, h.ImportCSVTodos)
 	todos.Put("/:id", middleware.Protected, h.UpdateTodo)
 	todos.Delete("/:id", middleware.Protected, h.DeleteTodo)
 

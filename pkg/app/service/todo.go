@@ -21,11 +21,16 @@ func NewTodoService(db *gorm.DB) *TodoService {
 
 // TODO: Maybe move this to a separate file (own package?)
 type ITodoService interface {
+	FindTodos(dest interface{}, accountID uint) *gorm.DB
 	FindTodoByID(dest interface{}, id string, accountID uint) *gorm.DB
 	CreateTodo(todo *model.Todo) *gorm.DB
 	UpdateTodo(todo *model.Todo) *gorm.DB
 	DeleteTodoByID(id string) *gorm.DB
 	CreateRandomTodo(accountID uint) *gorm.DB
+}
+
+func (ts *TodoService) FindTodos(dest interface{}, accountID uint) *gorm.DB {
+	return ts.db.Find(dest, "account_id = ?", accountID)
 }
 
 func (ts *TodoService) FindTodoByID(dest interface{}, id string, accountID uint) *gorm.DB {

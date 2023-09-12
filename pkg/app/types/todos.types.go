@@ -29,3 +29,7 @@ type UpdateTodoRequest struct {
 type UpdateTodoResponse struct {
 	Todo model.Todo `json:"todo"`
 }
+
+type ImportCSVTodosResponse struct {
+	Errors []error `json:"errors"`
+}
