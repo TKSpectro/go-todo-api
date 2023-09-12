@@ -1,5 +1,7 @@
-h1:UQbPuYVpsk7QXU1HR5AoyA9dvcMTw8J9+EoetWwsY9w=
+h1:dGsjrlQUBZR7pNXr2HMTQqpe0PrP3EqCngiQC6qpAMA=
 20230716141747_init.down.sql h1:VG2bTpj2REmFDtLQSvoeMyNZsYIJTm5/BnPff5qV0vY=
 20230716141747_init.up.sql h1:BFc1tfYcr5Uv2esfSGNgkCuNYnES/wifZjNYqbi5GEI=
 20230716142921_todo_add_completedAt.down.sql h1:PIih/lFHzNPxa3PQ8pT7NJTw9ncOoIblbUBWxg0r6yg=
 20230716142921_todo_add_completedAt.up.sql h1:GZqpk3YHjbfIiGiltOG1fQVxYUSCq0zIXfVnsXP/hTM=
+20230912123506_account_add_permission.down.sql h1:SHiB6U+EE95ec7xpOpGX7xkC9HJk25AFPbh6Es7mk2s=
+20230912123506_account_add_permission.up.sql h1:ow926Ur4d6gX25FiQHwcnCsGrYyCjH22VwwmGm842+A=

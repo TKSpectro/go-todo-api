@@ -7,6 +7,7 @@ import (
 	"github.com/TKSpectro/go-todo-api/pkg/app/model"
 	"github.com/TKSpectro/go-todo-api/pkg/app/types"
 	"github.com/TKSpectro/go-todo-api/pkg/middleware/locals"
+	"github.com/TKSpectro/go-todo-api/pkg/permission"
 	"github.com/TKSpectro/go-todo-api/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -24,6 +25,10 @@ import (
 func (h *Handler) GetAccounts(c *fiber.Ctx) error {
 	var accounts = &[]model.Account{}
 	var meta = locals.Meta(c)
+
+	if !locals.Can(c, permission.ACCOUNTS_MANAGE_ALL|permission.ACCOUNTS_READ_ALL) {
+		return &utils.FORBIDDEN
+	}
 
 	err := h.accountService.FindAccounts(accounts, meta).Error
 	if err != nil {
@@ -56,6 +61,11 @@ func (h *Handler) GetAccount(c *fiber.Ctx) error {
 	remoteId, err := strconv.ParseUint(remoteIdString, 10, 32)
 	if err != nil {
 		return &utils.BAD_REQUEST
+	}
+
+	// Check user has either permission or is requesting their own account
+	if !locals.Can(c, permission.ACCOUNTS_MANAGE_ALL|permission.ACCOUNTS_READ_ALL) && locals.JwtPayload(c).AccountID != uint(remoteId) {
+		return &utils.FORBIDDEN
 	}
 
 	err = h.accountService.FindAccountByID(account, uint(remoteId)).Error

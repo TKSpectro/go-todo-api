@@ -24,3 +24,7 @@ func JwtPayload(c *fiber.Ctx) (payload *jwt.TokenPayload) {
 func Meta(c *fiber.Ctx) *pagination.Meta {
 	return c.Locals(KEY_META).(*pagination.Meta)
 }
+
+func Can(c *fiber.Ctx, needs uint64) bool {
+	return (JwtPayload(c).Permission & needs) > 0
+}

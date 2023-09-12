@@ -13,6 +13,7 @@ type Account struct {
 	Firstname   string `gorm:"" json:"firstname" x-search:"true"`
 	Lastname    string `gorm:"" json:"lastname" x-search:"true"`
 	TokenSecret string `gorm:"type:varchar(8)" json:"-"`
+	Permission  uint64 `gorm:"default:0" json:"permission"`
 
 	Todos []Todo `gorm:"foreignKey:AccountID" json:"todos"`
 }

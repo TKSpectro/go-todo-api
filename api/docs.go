@@ -410,6 +410,9 @@ const docTemplate = `{
                 "lastname": {
                     "type": "string"
                 },
+                "permission": {
+                    "type": "integer"
+                },
                 "todos": {
                     "type": "array",
                     "items": {

@@ -16,10 +16,11 @@ import (
 
 // TokenPayload defines the payload for the token
 type TokenPayload struct {
-	Valid     bool
-	AccountID uint
-	Type      string
-	Secret    string
+	Valid      bool
+	AccountID  uint
+	Type       string
+	Secret     string
+	Permission uint64
 }
 
 const (
@@ -28,6 +29,7 @@ const (
 	CLAIM_ACCOUNT_ID = "accountID"
 	CLAIM_TYPE       = "type"
 	CLAIM_SECRET     = "tokenSecret"
+	CLAIM_PERMISSION = "permission"
 )
 
 // Instance of the pub/priv key sets. We keep them in memory so we don't have IO overhead on every request
@@ -53,6 +55,7 @@ func Generate(account *model.Account) (types.AuthResponseBody, error) {
 		Claim(CLAIM_ACCOUNT_ID, account.ID).
 		Claim(CLAIM_TYPE, "auth").
 		Claim(CLAIM_SECRET, account.TokenSecret).
+		Claim(CLAIM_PERMISSION, account.Permission).
 		Build()
 	if err != nil {
 		return types.AuthResponseBody{}, utils.RequestErrorFrom(&utils.TOKEN_GENERATION_ERROR, err.Error())
@@ -117,10 +120,11 @@ func Verify(token string) (*TokenPayload, error) {
 	}
 
 	return &TokenPayload{
-		Valid:     true,
-		AccountID: uint(claims[CLAIM_ACCOUNT_ID].(float64)),
-		Type:      claims[CLAIM_TYPE].(string),
-		Secret:    claims[CLAIM_SECRET].(string),
+		Valid:      true,
+		AccountID:  uint(claims[CLAIM_ACCOUNT_ID].(float64)),
+		Type:       claims[CLAIM_TYPE].(string),
+		Secret:     claims[CLAIM_SECRET].(string),
+		Permission: uint64(claims[CLAIM_PERMISSION].(float64)),
 	}, nil
 }
 

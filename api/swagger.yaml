@@ -12,6 +12,8 @@ definitions:
         type: integer
       lastname:
         type: string
+      permission:
+        type: integer
       todos:
         items:
           $ref: '#/definitions/model.Todo'
