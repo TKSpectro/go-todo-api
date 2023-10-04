@@ -36,6 +36,8 @@ var (
 	TEST_DB_ROOT_PASSWORD = getEnv("TEST_DB_ROOT_PASSWORD", "root")
 	TEST_DB_NAME          = getEnv("TEST_DB_NAME", "go_api_test")
 	TEST_DB_PORT          = getEnv("TEST_DB_LOCAL_PORT", "3306")
+
+	TEST_FILE_PATH = os.TempDir() + "/go-todo-api/"
 )
 
 func getEnv(name string, fallback string) string {

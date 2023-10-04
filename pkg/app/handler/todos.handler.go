@@ -212,7 +212,13 @@ func (h *Handler) ExportCSVTodos(c *fiber.Ctx) error {
 
 	c.Response().Header.Set("Content-Type", "text/csv")
 	c.Response().Header.Set("Content-Disposition", "attachment; filename=todos.csv")
-	return c.Download(filePath)
+	c.Download(filePath)
+
+	if err := os.Remove(filePath); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (h *Handler) ImportCSVTodos(c *fiber.Ctx) error {

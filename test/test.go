@@ -2,6 +2,8 @@ package test
 
 import (
 	"fmt"
+	"io/fs"
+	"os"
 
 	"github.com/TKSpectro/go-todo-api/config"
 	"github.com/TKSpectro/go-todo-api/pkg/database"
@@ -18,6 +20,8 @@ func Setup() *gorm.DB {
 	if config.ROOT_PATH == "" {
 		panic("[New]::ROOT_PATH is empty. Please set the environment variable GTA_ROOT_PATH to the root path of the project (See makefile:test)")
 	}
+
+	os.MkdirAll(config.TEST_FILE_PATH, fs.ModePerm)
 
 	dbServer := database.ConnectToTestServer()
 
@@ -39,6 +43,8 @@ func Teardown(db *gorm.DB) {
 
 	db.Exec("DROP DATABASE IF EXISTS " + config.TEST_DB_NAME)
 	db.Exec("CREATE DATABASE IF NOT EXISTS " + config.TEST_DB_NAME)
+
+	os.RemoveAll(config.TEST_FILE_PATH)
 
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()
