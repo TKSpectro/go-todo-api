@@ -9,6 +9,7 @@ import (
 	"github.com/TKSpectro/go-todo-api/pkg/app/service"
 	"github.com/TKSpectro/go-todo-api/pkg/app/types"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
+	"github.com/TKSpectro/go-todo-api/pkg/permission"
 	"github.com/TKSpectro/go-todo-api/test"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -21,10 +22,11 @@ var _ = Describe("Accounts.Handler", Ordered, func() {
 		BeforeAll(func() {
 			pw, _ := model.HashPassword("123456")
 			account := &model.Account{
-				Email:     "accounts.list@turbomeet.xyz",
-				Password:  pw,
-				Firstname: "Accounts",
-				Lastname:  "List",
+				Email:      "accounts.list@turbomeet.xyz",
+				Password:   pw,
+				Firstname:  "Accounts",
+				Lastname:   "List",
+				Permission: permission.ACCOUNTS_READ_ALL,
 			}
 			accountService := service.NewAccountService(DB)
 			accountService.CreateAccount(account)
