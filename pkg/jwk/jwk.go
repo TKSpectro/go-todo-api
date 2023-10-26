@@ -42,13 +42,18 @@ func Read() jwk.Set {
 			fmt.Println("jwk.json is empty, creating new set")
 
 			// Create a new set if the file is empty
-			set = jwk.NewSet()
 			key, err := Generate()
 			if err != nil {
 				fmt.Printf("failed to generate new JWK: %s\n", err)
 			}
 
+			set = jwk.NewSet()
 			set.AddKey(key)
+
+			Write(&JWK_DATA{
+				PRV_SET: set,
+				PUB_SET: PublicSetOf(set),
+			})
 		} else {
 			fmt.Printf("failed to read jwk.json: %s\n", err)
 			panic(err)
@@ -102,6 +107,10 @@ func Rotate(jwks *JWK_DATA) {
 
 	jwks.PUB_SET.AddKey(pubKey)
 
+	Write(jwks)
+}
+
+func Write(jwks *JWK_DATA) {
 	enc, err := json.MarshalIndent(jwks.PRV_SET, "", "    ")
 	if err != nil {
 		fmt.Printf("failed to marshal JWK set: %s\n", err)
