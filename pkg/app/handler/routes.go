@@ -3,7 +3,10 @@ package handler
 import (
 	"github.com/TKSpectro/go-todo-api/config"
 	"github.com/TKSpectro/go-todo-api/pkg/middleware"
+	"github.com/TKSpectro/go-todo-api/pkg/view"
+	"github.com/a-h/templ"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/adaptor"
 	"github.com/gofiber/swagger"
 )
 
@@ -20,6 +23,8 @@ func (h *Handler) RegisterHyperMediaRoutes(app *fiber.App) {
 	app.Static("/js", config.ROOT_PATH+"/pkg/view/js")
 
 	app.Get("/", middleware.LoadAuth, h.VIndex)
+
+	app.Get("/hello", adaptor.HTTPHandler(templ.Handler(view.Hello("ToM"))))
 
 	app.Get("/login", h.VLogin)
 	app.Post("/login", h.VLoginPost)

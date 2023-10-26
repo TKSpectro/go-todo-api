@@ -37,6 +37,12 @@ cp .env.example .env
 make migrate-up
 ```
 
+5. Generate the [TEMPL](https://templ.guide/integrations/) files
+
+```bash
+templ generate
+```
+
 5. Run the server
 
 ```bash
@@ -46,6 +52,10 @@ air
 ```
 
 ## Knowledge base
+
+### TEMPL
+
+[TEMPL](https://templ.guide/integrations/)
 
 ### JSON parsing with go
 

@@ -32,3 +32,6 @@ jwk.json
 report.json
 
 tailwind.config.js
+
+# Ignore generated templ files
+*_templ.go
