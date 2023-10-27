@@ -2,57 +2,35 @@ package handler
 
 import (
 	"errors"
-	"html/template"
 	"net/http"
 
-	"github.com/TKSpectro/go-todo-api/config"
 	"github.com/TKSpectro/go-todo-api/pkg/app/model"
 	"github.com/TKSpectro/go-todo-api/pkg/app/types"
 	"github.com/TKSpectro/go-todo-api/pkg/app/types/pagination"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
 	"github.com/TKSpectro/go-todo-api/pkg/middleware/locals"
+	"github.com/TKSpectro/go-todo-api/pkg/view"
 	"github.com/TKSpectro/go-todo-api/utils"
+	"github.com/a-h/templ"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/adaptor"
 	"gorm.io/gorm"
 )
 
-func defaultMap(c *fiber.Ctx, h *Handler, m *fiber.Map) fiber.Map {
-	if m == nil {
-		m = &fiber.Map{}
-	}
-
-	(*m)["IsAuthenticated"] = locals.JwtPayload(c).Valid
-	(*m)["AccountID"] = locals.JwtPayload(c).AccountID
-
+func (h *Handler) GetBaseData(c *fiber.Ctx) view.BaseData {
+	account := &model.Account{}
 	if locals.JwtPayload(c).Valid {
-		account := &model.Account{}
 		h.accountService.FindAccountByID(account, locals.JwtPayload(c).AccountID)
-
-		(*m)["Account"] = account
 	}
 
-	return *m
-}
-
-// renderPartial
-// When rendering partials we need to use this instead of c.Render because it would include the whole template with the layout etc.
-// As we use htmx this makes no sense and we only want to render the partial itself
-//
-// The templateName and name CAN be the same if the whole partial is in its own file
-// but sometimes a partial will be the templateName ...-list and the name will be
-// ...-item (...-list.html containing a block/define for ...-item.html)
-func renderPartial(c *fiber.Ctx, templateName string, name string, data interface{}) error {
-	tmpl := template.Must(template.ParseFiles(config.ROOT_PATH + "/pkg/view/partials/" + templateName + ".html"))
-	err := tmpl.ExecuteTemplate(c.Response().BodyWriter(), name, data)
-	if err != nil {
-		return err
+	return view.BaseData{
+		IsAuthenticated: locals.JwtPayload(c).Valid,
+		Account:         account,
 	}
-
-	return nil
 }
 
 func (h *Handler) VIndex(c *fiber.Ctx) error {
-	return c.Render("index", defaultMap(c, h, nil))
+	return adaptor.HTTPHandler(templ.Handler(view.IndexPage(h.GetBaseData(c))))(c)
 }
 
 func (h *Handler) VTodosIndex(c *fiber.Ctx) error {
@@ -63,14 +41,12 @@ func (h *Handler) VTodosIndex(c *fiber.Ctx) error {
 		Direction: "desc",
 	})
 
-	var todos = &[]model.Todo{}
-	if err := h.FindWithMeta(todos, &model.Todo{}, meta, h.db.Where("account_id = ?", locals.JwtPayload(c).AccountID)).Error; err != nil {
+	var todos = []model.Todo{}
+	if err := h.FindWithMeta(&todos, &model.Todo{}, meta, h.db.Where("account_id = ?", locals.JwtPayload(c).AccountID)).Error; err != nil {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 
-	return c.Render("todos", defaultMap(c, h, &fiber.Map{
-		"Todos": todos,
-	}))
+	return adaptor.HTTPHandler(templ.Handler(view.TodosIndexPage(h.GetBaseData(c), todos)))(c)
 }
 
 func (h *Handler) VTodosCreate(c *fiber.Ctx) error {
@@ -86,11 +62,7 @@ func (h *Handler) VTodosCreate(c *fiber.Ctx) error {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 
-	if err := renderPartial(c, "todo-list", "todo-item", todo); err != nil {
-		return &utils.INTERNAL_SERVER_ERROR
-	}
-
-	return nil
+	return adaptor.HTTPHandler(templ.Handler(view.TodoItem(*todo)))(c)
 }
 
 func (h *Handler) VTodosComplete(c *fiber.Ctx) error {
@@ -110,11 +82,7 @@ func (h *Handler) VTodosComplete(c *fiber.Ctx) error {
 		return &utils.INTERNAL_SERVER_ERROR
 	}
 
-	if err := renderPartial(c, "todo-list", "todo-complete-toggle", todo); err != nil {
-		return &utils.INTERNAL_SERVER_ERROR
-	}
-
-	return nil
+	return adaptor.HTTPHandler(templ.Handler(view.TodoCompleteToggle(*todo)))(c)
 }
 
 func (h *Handler) VTodosDelete(c *fiber.Ctx) error {
@@ -125,7 +93,7 @@ func (h *Handler) VTodosDelete(c *fiber.Ctx) error {
 }
 
 func (h *Handler) VLogin(c *fiber.Ctx) error {
-	return c.Render("login", defaultMap(c, h, nil))
+	return adaptor.HTTPHandler(templ.Handler(view.LoginPage(h.GetBaseData(c))))(c)
 }
 
 func (h *Handler) VLoginPost(c *fiber.Ctx) error {

@@ -2,7 +2,6 @@ package app
 
 import (
 	_ "github.com/TKSpectro/go-todo-api/api"
-	"github.com/TKSpectro/go-todo-api/config"
 	"github.com/TKSpectro/go-todo-api/pkg/app/handler"
 	"github.com/TKSpectro/go-todo-api/pkg/app/service"
 	"github.com/TKSpectro/go-todo-api/pkg/jwt"
@@ -11,18 +10,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/gofiber/template/html/v2"
 )
 
 func New(db *gorm.DB) *fiber.App {
 	jwt.Init()
 
-	engine := html.New(config.ROOT_PATH+"/pkg/view", ".html")
-
 	app := fiber.New(fiber.Config{
 		ErrorHandler: ErrorHandler,
-		Views:        engine,
-		ViewsLayout:  "layouts/main",
 	})
 
 	app.Use(logger.New())
